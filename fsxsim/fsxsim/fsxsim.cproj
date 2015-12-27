@@ -56,9 +56,18 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="drivers\usb_serial.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\usb_serial.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="fsxsim.c">
       <SubType>compile</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="drivers" />
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>
