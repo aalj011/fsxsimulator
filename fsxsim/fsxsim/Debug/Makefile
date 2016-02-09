@@ -36,7 +36,10 @@ SUBDIRS :=  \
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
-../drivers/usb_serial.c \
+../../../drivers/error/error.c \
+../../../drivers/IO/IO.c \
+../../../drivers/twi/twi.c \
+../../../drivers/usb_serial/usb_serial.c \
 ../fsxsim.c
 
 
@@ -47,21 +50,33 @@ ASM_SRCS +=
 
 
 OBJS +=  \
+drivers/error.o \
+drivers/IO.o \
+drivers/twi.o \
 drivers/usb_serial.o \
 fsxsim.o
 
 
 OBJS_AS_ARGS +=  \
+drivers/error.o \
+drivers/IO.o \
+drivers/twi.o \
 drivers/usb_serial.o \
 fsxsim.o
 
 
 C_DEPS +=  \
+drivers/error.d \
+drivers/IO.d \
+drivers/twi.d \
 drivers/usb_serial.d \
 fsxsim.d
 
 
 C_DEPS_AS_ARGS +=  \
+drivers/error.d \
+drivers/IO.d \
+drivers/twi.d \
 drivers/usb_serial.d \
 fsxsim.d
 
@@ -80,7 +95,31 @@ OUTPUT_FILE_DEP:= ./makedep.mk
 
 
 
-drivers/%.o: ../drivers/%.c
+
+
+
+
+
+
+drivers/%.o: ../../../drivers/error/%.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler
+	$(QUOTE)C:\Program Files (x86)\Atmel\AVR Studio 5.1\extensions\Atmel\AVRGCC\3.3.1.27\AVRToolchain\bin\avr-gcc.exe$(QUOTE)  -funsigned-char -funsigned-bitfields -O1 -fpack-struct -fshort-enums -g2 -Wall -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)"  -mmcu=atmega32u4  -o"$@" "$<" 
+	@echo Finished building: $<
+
+drivers/%.o: ../../../drivers/IO/%.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler
+	$(QUOTE)C:\Program Files (x86)\Atmel\AVR Studio 5.1\extensions\Atmel\AVRGCC\3.3.1.27\AVRToolchain\bin\avr-gcc.exe$(QUOTE)  -funsigned-char -funsigned-bitfields -O1 -fpack-struct -fshort-enums -g2 -Wall -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)"  -mmcu=atmega32u4  -o"$@" "$<" 
+	@echo Finished building: $<
+
+drivers/%.o: ../../../drivers/twi/%.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler
+	$(QUOTE)C:\Program Files (x86)\Atmel\AVR Studio 5.1\extensions\Atmel\AVRGCC\3.3.1.27\AVRToolchain\bin\avr-gcc.exe$(QUOTE)  -funsigned-char -funsigned-bitfields -O1 -fpack-struct -fshort-enums -g2 -Wall -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)"  -mmcu=atmega32u4  -o"$@" "$<" 
+	@echo Finished building: $<
+
+drivers/%.o: ../../../drivers/usb_serial/%.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler
 	$(QUOTE)C:\Program Files (x86)\Atmel\AVR Studio 5.1\extensions\Atmel\AVRGCC\3.3.1.27\AVRToolchain\bin\avr-gcc.exe$(QUOTE)  -funsigned-char -funsigned-bitfields -O1 -fpack-struct -fshort-enums -g2 -Wall -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)"  -mmcu=atmega32u4  -o"$@" "$<" 

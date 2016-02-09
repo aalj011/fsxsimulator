@@ -1,0 +1,929 @@
+
+autopilot_main.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000362  00000000  00000000  00000094  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000002  00800060  00000362  000003f6  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          0000000c  00800062  00800062  000003f8  2**0
+                  ALLOC
+  3 .stab         000006cc  00000000  00000000  000003f8  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  4 .stabstr      00000090  00000000  00000000  00000ac4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_aranges 00000080  00000000  00000000  00000b54  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_pubnames 000001b4  00000000  00000000  00000bd4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_info   000006cb  00000000  00000000  00000d88  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_abbrev 00000367  00000000  00000000  00001453  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_line   0000093a  00000000  00000000  000017ba  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_frame  00000150  00000000  00000000  000020f4  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_str    0000032e  00000000  00000000  00002244  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_loc    000003fc  00000000  00000000  00002572  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 13 .debug_pubtypes 000000a6  00000000  00000000  0000296e  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	12 c0       	rjmp	.+36     	; 0x26 <__ctors_end>
+   2:	2c c0       	rjmp	.+88     	; 0x5c <__bad_interrupt>
+   4:	2b c0       	rjmp	.+86     	; 0x5c <__bad_interrupt>
+   6:	2a c0       	rjmp	.+84     	; 0x5c <__bad_interrupt>
+   8:	29 c0       	rjmp	.+82     	; 0x5c <__bad_interrupt>
+   a:	28 c0       	rjmp	.+80     	; 0x5c <__bad_interrupt>
+   c:	27 c0       	rjmp	.+78     	; 0x5c <__bad_interrupt>
+   e:	26 c0       	rjmp	.+76     	; 0x5c <__bad_interrupt>
+  10:	25 c0       	rjmp	.+74     	; 0x5c <__bad_interrupt>
+  12:	24 c0       	rjmp	.+72     	; 0x5c <__bad_interrupt>
+  14:	23 c0       	rjmp	.+70     	; 0x5c <__bad_interrupt>
+  16:	22 c0       	rjmp	.+68     	; 0x5c <__bad_interrupt>
+  18:	21 c0       	rjmp	.+66     	; 0x5c <__bad_interrupt>
+  1a:	20 c0       	rjmp	.+64     	; 0x5c <__bad_interrupt>
+  1c:	1f c0       	rjmp	.+62     	; 0x5c <__bad_interrupt>
+  1e:	1e c0       	rjmp	.+60     	; 0x5c <__bad_interrupt>
+  20:	1d c0       	rjmp	.+58     	; 0x5c <__bad_interrupt>
+  22:	1c c0       	rjmp	.+56     	; 0x5c <__bad_interrupt>
+  24:	1b c0       	rjmp	.+54     	; 0x5c <__bad_interrupt>
+
+00000026 <__ctors_end>:
+  26:	11 24       	eor	r1, r1
+  28:	1f be       	out	0x3f, r1	; 63
+  2a:	cf e5       	ldi	r28, 0x5F	; 95
+  2c:	d4 e0       	ldi	r29, 0x04	; 4
+  2e:	de bf       	out	0x3e, r29	; 62
+  30:	cd bf       	out	0x3d, r28	; 61
+
+00000032 <__do_copy_data>:
+  32:	10 e0       	ldi	r17, 0x00	; 0
+  34:	a0 e6       	ldi	r26, 0x60	; 96
+  36:	b0 e0       	ldi	r27, 0x00	; 0
+  38:	e2 e6       	ldi	r30, 0x62	; 98
+  3a:	f3 e0       	ldi	r31, 0x03	; 3
+  3c:	02 c0       	rjmp	.+4      	; 0x42 <__SREG__+0x3>
+  3e:	05 90       	lpm	r0, Z+
+  40:	0d 92       	st	X+, r0
+  42:	a2 36       	cpi	r26, 0x62	; 98
+  44:	b1 07       	cpc	r27, r17
+  46:	d9 f7       	brne	.-10     	; 0x3e <__SP_H__>
+
+00000048 <__do_clear_bss>:
+  48:	10 e0       	ldi	r17, 0x00	; 0
+  4a:	a2 e6       	ldi	r26, 0x62	; 98
+  4c:	b0 e0       	ldi	r27, 0x00	; 0
+  4e:	01 c0       	rjmp	.+2      	; 0x52 <.do_clear_bss_start>
+
+00000050 <.do_clear_bss_loop>:
+  50:	1d 92       	st	X+, r1
+
+00000052 <.do_clear_bss_start>:
+  52:	ae 36       	cpi	r26, 0x6E	; 110
+  54:	b1 07       	cpc	r27, r17
+  56:	e1 f7       	brne	.-8      	; 0x50 <.do_clear_bss_loop>
+  58:	6a d1       	rcall	.+724    	; 0x32e <main>
+  5a:	81 c1       	rjmp	.+770    	; 0x35e <_exit>
+
+0000005c <__bad_interrupt>:
+  5c:	d1 cf       	rjmp	.-94     	; 0x0 <__vectors>
+
+0000005e <error_init>:
+
+static ports error_port = PORT_C;
+
+void error_init(ports port)
+{
+	error_port = port;
+  5e:	80 93 60 00 	sts	0x0060, r24
+	
+	// clear the io required
+	IO_write(error_port, 6,0); // red lgiht
+  62:	66 e0       	ldi	r22, 0x06	; 6
+  64:	40 e0       	ldi	r20, 0x00	; 0
+  66:	38 d0       	rcall	.+112    	; 0xd8 <IO_write>
+	IO_write(error_port,7,0);  // green light
+  68:	80 91 60 00 	lds	r24, 0x0060
+  6c:	67 e0       	ldi	r22, 0x07	; 7
+  6e:	40 e0       	ldi	r20, 0x00	; 0
+  70:	33 d0       	rcall	.+102    	; 0xd8 <IO_write>
+}
+  72:	08 95       	ret
+
+00000074 <error_handler>:
+
+
+void error_handler(uint8_t status)
+{
+  74:	1f 93       	push	r17
+  76:	18 2f       	mov	r17, r24
+	// clear the io required
+	IO_write(error_port, 6,0);
+  78:	80 91 60 00 	lds	r24, 0x0060
+  7c:	66 e0       	ldi	r22, 0x06	; 6
+  7e:	40 e0       	ldi	r20, 0x00	; 0
+  80:	2b d0       	rcall	.+86     	; 0xd8 <IO_write>
+	IO_write(error_port,7,0);
+  82:	80 91 60 00 	lds	r24, 0x0060
+  86:	67 e0       	ldi	r22, 0x07	; 7
+  88:	40 e0       	ldi	r20, 0x00	; 0
+  8a:	26 d0       	rcall	.+76     	; 0xd8 <IO_write>
+
+	if(status)
+  8c:	11 23       	and	r17, r17
+  8e:	e9 f0       	breq	.+58     	; 0xca <error_handler+0x56>
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  90:	8f e7       	ldi	r24, 0x7F	; 127
+  92:	9a e1       	ldi	r25, 0x1A	; 26
+  94:	a6 e0       	ldi	r26, 0x06	; 6
+  96:	81 50       	subi	r24, 0x01	; 1
+  98:	90 40       	sbci	r25, 0x00	; 0
+  9a:	a0 40       	sbci	r26, 0x00	; 0
+  9c:	e1 f7       	brne	.-8      	; 0x96 <error_handler+0x22>
+  9e:	00 c0       	rjmp	.+0      	; 0xa0 <error_handler+0x2c>
+  a0:	00 00       	nop
+	{
+		// error has been generated stay in this while loop
+		while(1)
+		{
+			_delay_ms(2000);
+			IO_write(error_port,7,1);
+  a2:	80 91 60 00 	lds	r24, 0x0060
+  a6:	67 e0       	ldi	r22, 0x07	; 7
+  a8:	41 e0       	ldi	r20, 0x01	; 1
+  aa:	16 d0       	rcall	.+44     	; 0xd8 <IO_write>
+  ac:	8f e7       	ldi	r24, 0x7F	; 127
+  ae:	9a e1       	ldi	r25, 0x1A	; 26
+  b0:	a6 e0       	ldi	r26, 0x06	; 6
+  b2:	81 50       	subi	r24, 0x01	; 1
+  b4:	90 40       	sbci	r25, 0x00	; 0
+  b6:	a0 40       	sbci	r26, 0x00	; 0
+  b8:	e1 f7       	brne	.-8      	; 0xb2 <error_handler+0x3e>
+  ba:	00 c0       	rjmp	.+0      	; 0xbc <error_handler+0x48>
+  bc:	00 00       	nop
+			_delay_ms(2000);
+			IO_write(error_port,7,0);
+  be:	80 91 60 00 	lds	r24, 0x0060
+  c2:	67 e0       	ldi	r22, 0x07	; 7
+  c4:	40 e0       	ldi	r20, 0x00	; 0
+  c6:	08 d0       	rcall	.+16     	; 0xd8 <IO_write>
+  c8:	e3 cf       	rjmp	.-58     	; 0x90 <error_handler+0x1c>
+		}
+	}
+	else
+	{
+		// no error generated
+		IO_write(error_port,6,1);
+  ca:	80 91 60 00 	lds	r24, 0x0060
+  ce:	66 e0       	ldi	r22, 0x06	; 6
+  d0:	41 e0       	ldi	r20, 0x01	; 1
+  d2:	02 d0       	rcall	.+4      	; 0xd8 <IO_write>
+	}
+  d4:	1f 91       	pop	r17
+  d6:	08 95       	ret
+
+000000d8 <IO_write>:
+				state specifies whether we want to set the pin high or low.
+** Note: 
+*/
+void IO_write(ports port, uint8_t pinnumber,uint8_t state)
+{
+	switch (port)
+  d8:	81 30       	cpi	r24, 0x01	; 1
+  da:	f1 f0       	breq	.+60     	; 0x118 <IO_write+0x40>
+  dc:	81 30       	cpi	r24, 0x01	; 1
+  de:	20 f0       	brcs	.+8      	; 0xe8 <IO_write+0x10>
+  e0:	82 30       	cpi	r24, 0x02	; 2
+  e2:	09 f0       	breq	.+2      	; 0xe6 <IO_write+0xe>
+  e4:	48 c0       	rjmp	.+144    	; 0x176 <IO_write+0x9e>
+  e6:	30 c0       	rjmp	.+96     	; 0x148 <IO_write+0x70>
+	{
+		case PORT_B:
+		{
+			#ifdef PORTB
+			//set the pinnumber as output
+			DDRB |= (1 << pinnumber);
+  e8:	27 b3       	in	r18, 0x17	; 23
+  ea:	81 e0       	ldi	r24, 0x01	; 1
+  ec:	90 e0       	ldi	r25, 0x00	; 0
+  ee:	fc 01       	movw	r30, r24
+  f0:	02 c0       	rjmp	.+4      	; 0xf6 <IO_write+0x1e>
+  f2:	ee 0f       	add	r30, r30
+  f4:	ff 1f       	adc	r31, r31
+  f6:	6a 95       	dec	r22
+  f8:	e2 f7       	brpl	.-8      	; 0xf2 <IO_write+0x1a>
+  fa:	bf 01       	movw	r22, r30
+  fc:	8e 2f       	mov	r24, r30
+  fe:	82 2b       	or	r24, r18
+ 100:	87 bb       	out	0x17, r24	; 23
+			if(state)
+ 102:	44 23       	and	r20, r20
+ 104:	21 f0       	breq	.+8      	; 0x10e <IO_write+0x36>
+			{
+				PORTB |= (1 << pinnumber);
+ 106:	88 b3       	in	r24, 0x18	; 24
+ 108:	68 2b       	or	r22, r24
+ 10a:	68 bb       	out	0x18, r22	; 24
+ 10c:	08 95       	ret
+			}
+			else
+			{
+				PORTB &= ~(1<< pinnumber);
+ 10e:	88 b3       	in	r24, 0x18	; 24
+ 110:	60 95       	com	r22
+ 112:	68 23       	and	r22, r24
+ 114:	68 bb       	out	0x18, r22	; 24
+ 116:	08 95       	ret
+		}
+		case PORT_C:
+		{
+			#ifdef PORTC
+			//set the pinnumber as output
+			DDRC |= (1 << pinnumber);
+ 118:	24 b3       	in	r18, 0x14	; 20
+ 11a:	81 e0       	ldi	r24, 0x01	; 1
+ 11c:	90 e0       	ldi	r25, 0x00	; 0
+ 11e:	fc 01       	movw	r30, r24
+ 120:	02 c0       	rjmp	.+4      	; 0x126 <IO_write+0x4e>
+ 122:	ee 0f       	add	r30, r30
+ 124:	ff 1f       	adc	r31, r31
+ 126:	6a 95       	dec	r22
+ 128:	e2 f7       	brpl	.-8      	; 0x122 <IO_write+0x4a>
+ 12a:	bf 01       	movw	r22, r30
+ 12c:	8e 2f       	mov	r24, r30
+ 12e:	82 2b       	or	r24, r18
+ 130:	84 bb       	out	0x14, r24	; 20
+			if(state)
+ 132:	44 23       	and	r20, r20
+ 134:	21 f0       	breq	.+8      	; 0x13e <IO_write+0x66>
+			{
+				PORTC |= (1 << pinnumber);
+ 136:	85 b3       	in	r24, 0x15	; 21
+ 138:	68 2b       	or	r22, r24
+ 13a:	65 bb       	out	0x15, r22	; 21
+ 13c:	08 95       	ret
+			}
+			else
+			{
+				PORTC &= ~(1<< pinnumber);
+ 13e:	85 b3       	in	r24, 0x15	; 21
+ 140:	60 95       	com	r22
+ 142:	68 23       	and	r22, r24
+ 144:	65 bb       	out	0x15, r22	; 21
+ 146:	08 95       	ret
+		}
+		case PORT_D:
+		{
+			#ifdef PORTD
+			//set the pinnumber as output
+			DDRD |= (1 << pinnumber);
+ 148:	21 b3       	in	r18, 0x11	; 17
+ 14a:	81 e0       	ldi	r24, 0x01	; 1
+ 14c:	90 e0       	ldi	r25, 0x00	; 0
+ 14e:	fc 01       	movw	r30, r24
+ 150:	02 c0       	rjmp	.+4      	; 0x156 <IO_write+0x7e>
+ 152:	ee 0f       	add	r30, r30
+ 154:	ff 1f       	adc	r31, r31
+ 156:	6a 95       	dec	r22
+ 158:	e2 f7       	brpl	.-8      	; 0x152 <IO_write+0x7a>
+ 15a:	bf 01       	movw	r22, r30
+ 15c:	8e 2f       	mov	r24, r30
+ 15e:	82 2b       	or	r24, r18
+ 160:	81 bb       	out	0x11, r24	; 17
+			if(state)
+ 162:	44 23       	and	r20, r20
+ 164:	21 f0       	breq	.+8      	; 0x16e <IO_write+0x96>
+			{
+				PORTD |= (1 << pinnumber);
+ 166:	82 b3       	in	r24, 0x12	; 18
+ 168:	68 2b       	or	r22, r24
+ 16a:	62 bb       	out	0x12, r22	; 18
+ 16c:	08 95       	ret
+			}
+			else
+			{
+				PORTD &= ~(1<< pinnumber);
+ 16e:	82 b3       	in	r24, 0x12	; 18
+ 170:	60 95       	com	r22
+ 172:	68 23       	and	r22, r24
+ 174:	62 bb       	out	0x12, r22	; 18
+ 176:	08 95       	ret
+
+00000178 <IO_read>:
+*/
+uint8_t IO_read(ports port, uint8_t pinnumber)
+{
+	uint8_t pinvalue = 0;
+	
+	switch (port)
+ 178:	81 30       	cpi	r24, 0x01	; 1
+ 17a:	c1 f0       	breq	.+48     	; 0x1ac <IO_read+0x34>
+ 17c:	81 30       	cpi	r24, 0x01	; 1
+ 17e:	18 f0       	brcs	.+6      	; 0x186 <IO_read+0xe>
+ 180:	82 30       	cpi	r24, 0x02	; 2
+ 182:	d1 f5       	brne	.+116    	; 0x1f8 <IO_read+0x80>
+ 184:	26 c0       	rjmp	.+76     	; 0x1d2 <IO_read+0x5a>
+	{
+		case PORT_B:
+		{
+			#ifdef PORTB	
+			//set pin as input
+			DDRB &= ~(1 << pinnumber);
+ 186:	47 b3       	in	r20, 0x17	; 23
+ 188:	21 e0       	ldi	r18, 0x01	; 1
+ 18a:	30 e0       	ldi	r19, 0x00	; 0
+ 18c:	c9 01       	movw	r24, r18
+ 18e:	02 c0       	rjmp	.+4      	; 0x194 <IO_read+0x1c>
+ 190:	88 0f       	add	r24, r24
+ 192:	99 1f       	adc	r25, r25
+ 194:	6a 95       	dec	r22
+ 196:	e2 f7       	brpl	.-8      	; 0x190 <IO_read+0x18>
+ 198:	98 2f       	mov	r25, r24
+ 19a:	90 95       	com	r25
+ 19c:	94 23       	and	r25, r20
+ 19e:	97 bb       	out	0x17, r25	; 23
+			//enable pull up resistor
+			PORTB |= (1 << pinnumber);
+ 1a0:	98 b3       	in	r25, 0x18	; 24
+ 1a2:	98 2b       	or	r25, r24
+ 1a4:	98 bb       	out	0x18, r25	; 24
+			//read the value required
+			pinvalue = (1 << pinnumber)&(PINB);	
+ 1a6:	96 b3       	in	r25, 0x16	; 22
+ 1a8:	89 23       	and	r24, r25
+			#endif				
+			break;
+ 1aa:	08 95       	ret
+		}
+		case PORT_C:
+		{
+			#ifdef PORTC
+			//set pin as input
+			DDRC &= ~(1 << pinnumber);
+ 1ac:	44 b3       	in	r20, 0x14	; 20
+ 1ae:	21 e0       	ldi	r18, 0x01	; 1
+ 1b0:	30 e0       	ldi	r19, 0x00	; 0
+ 1b2:	c9 01       	movw	r24, r18
+ 1b4:	02 c0       	rjmp	.+4      	; 0x1ba <IO_read+0x42>
+ 1b6:	88 0f       	add	r24, r24
+ 1b8:	99 1f       	adc	r25, r25
+ 1ba:	6a 95       	dec	r22
+ 1bc:	e2 f7       	brpl	.-8      	; 0x1b6 <IO_read+0x3e>
+ 1be:	98 2f       	mov	r25, r24
+ 1c0:	90 95       	com	r25
+ 1c2:	94 23       	and	r25, r20
+ 1c4:	94 bb       	out	0x14, r25	; 20
+			//enable pull up resistor
+			PORTC |= (1 << pinnumber);
+ 1c6:	95 b3       	in	r25, 0x15	; 21
+ 1c8:	98 2b       	or	r25, r24
+ 1ca:	95 bb       	out	0x15, r25	; 21
+			//read the value required
+			pinvalue = (1 << pinnumber)&(PINC);	
+ 1cc:	93 b3       	in	r25, 0x13	; 19
+ 1ce:	89 23       	and	r24, r25
+			#endif						
+			break;
+ 1d0:	08 95       	ret
+		}
+		case PORT_D:
+		{
+			#ifdef PORTD
+			//set pin as input
+			DDRD &= ~(1 << pinnumber);
+ 1d2:	41 b3       	in	r20, 0x11	; 17
+ 1d4:	21 e0       	ldi	r18, 0x01	; 1
+ 1d6:	30 e0       	ldi	r19, 0x00	; 0
+ 1d8:	c9 01       	movw	r24, r18
+ 1da:	02 c0       	rjmp	.+4      	; 0x1e0 <IO_read+0x68>
+ 1dc:	88 0f       	add	r24, r24
+ 1de:	99 1f       	adc	r25, r25
+ 1e0:	6a 95       	dec	r22
+ 1e2:	e2 f7       	brpl	.-8      	; 0x1dc <IO_read+0x64>
+ 1e4:	98 2f       	mov	r25, r24
+ 1e6:	90 95       	com	r25
+ 1e8:	94 23       	and	r25, r20
+ 1ea:	91 bb       	out	0x11, r25	; 17
+			//enable pull up resistor
+			PORTD |= (1 << pinnumber);
+ 1ec:	92 b3       	in	r25, 0x12	; 18
+ 1ee:	98 2b       	or	r25, r24
+ 1f0:	92 bb       	out	0x12, r25	; 18
+			//read the value required
+			pinvalue = (1 << pinnumber)&(PIND);
+ 1f2:	90 b3       	in	r25, 0x10	; 16
+ 1f4:	89 23       	and	r24, r25
+			#endif					
+			break;
+ 1f6:	08 95       	ret
+** Note: 
+** Returns:		returns a 1 or 0 depending on the state of the pin read.
+*/
+uint8_t IO_read(ports port, uint8_t pinnumber)
+{
+	uint8_t pinvalue = 0;
+ 1f8:	80 e0       	ldi	r24, 0x00	; 0
+			break;
+		}
+	}
+	
+	return pinvalue;
+ 1fa:	08 95       	ret
+
+000001fc <twi_master_init>:
+Note:			None
+****************************************************************************/
+void twi_master_init(void)
+{
+	//PRR0 = (0<<PRTWI);													//Turn off Power reduction on TWI 							
+	TWSR = (0<<TWPS0)|(0<<TWPS1);
+ 1fc:	11 b8       	out	0x01, r1	; 1
+	TWBR = TWBR_BIT_RATE;													//Bit rate at 8mhz 100khz 0x20	
+ 1fe:	80 e2       	ldi	r24, 0x20	; 32
+ 200:	80 b9       	out	0x00, r24	; 0
+	TWDR = 0xFF;															//Dummy data
+ 202:	8f ef       	ldi	r24, 0xFF	; 255
+ 204:	83 b9       	out	0x03, r24	; 3
+	TWCR =	(1<<TWEN)|														//Enables TWI interface
+ 206:	84 e0       	ldi	r24, 0x04	; 4
+ 208:	86 bf       	out	0x36, r24	; 54
+			(0<<TWIE)|(0<<TWINT)|											//Disable interrupt
+			(0<<TWEA)|(0<<TWSTA)|(0<<TWSTO)|								//Setting ACK gen,start condition and stop condition to zero init conditions 
+			(0<<TWWC);														//Write collision flag to zero	
+}
+ 20a:	08 95       	ret
+
+0000020c <twi_master_start_condition>:
+Note:			None
+****************************************************************************/
+uint8_t twi_master_start_condition(void)
+{
+	uint8_t status = 0;	
+	TWCR =	(1<<TWEN)|														//Enables TWI interface
+ 20c:	84 ea       	ldi	r24, 0xA4	; 164
+ 20e:	86 bf       	out	0x36, r24	; 54
+			(0<<TWIE)|(1<<TWINT)|											//Enable interrupt
+			(0<<TWEA)|(1<<TWSTA)|(0<<TWSTO)|								//Enabling the start condition bit 
+			(0<<TWWC);														//write collision flag to zero	
+	
+	while(!(TWCR &(1<<TWINT)));												//Wait till flag is cleared	
+ 210:	06 b6       	in	r0, 0x36	; 54
+ 212:	07 fe       	sbrs	r0, 7
+ 214:	fd cf       	rjmp	.-6      	; 0x210 <twi_master_start_condition+0x4>
+	
+	if((TWSR & MASK) != MASTER_START_TRANSMITTED)							//Check the status reg if successful							
+ 216:	91 b1       	in	r25, 0x01	; 1
+ 218:	98 7f       	andi	r25, 0xF8	; 248
+Returns:		Returns a 1 for NOT successful execution and 0 for successful
+Note:			None
+****************************************************************************/
+uint8_t twi_master_start_condition(void)
+{
+	uint8_t status = 0;	
+ 21a:	81 e0       	ldi	r24, 0x01	; 1
+ 21c:	98 30       	cpi	r25, 0x08	; 8
+ 21e:	09 f4       	brne	.+2      	; 0x222 <twi_master_start_condition+0x16>
+ 220:	80 e0       	ldi	r24, 0x00	; 0
+	if((TWSR & MASK) != MASTER_START_TRANSMITTED)							//Check the status reg if successful							
+	{
+		status = 1;															//Error has occurred
+	}		
+	return status;
+}
+ 222:	08 95       	ret
+
+00000224 <twi_master_stop_condition>:
+Note:			None
+****************************************************************************/
+uint8_t twi_master_stop_condition(void)
+{
+	uint8_t status = 0;	
+	TWCR =	(1<<TWEN)|														//Enables TWI interface
+ 224:	84 e9       	ldi	r24, 0x94	; 148
+ 226:	86 bf       	out	0x36, r24	; 54
+			(0<<TWIE)|(1<<TWINT)|											//Enable interrupt
+			(0<<TWEA)|(0<<TWSTA)|(1<<TWSTO)|								//Enabling the stop condition bit 
+			(0<<TWWC);														//write collision flag to zero	
+	return status;
+}
+ 228:	80 e0       	ldi	r24, 0x00	; 0
+ 22a:	08 95       	ret
+
+0000022c <twi_master_repeatCondition>:
+Note:			None
+****************************************************************************/
+uint8_t twi_master_repeatCondition(void)
+{
+	uint8_t status = 0;	
+	TWCR =	(1<<TWEN)|														//Enables TWI interface
+ 22c:	84 ea       	ldi	r24, 0xA4	; 164
+ 22e:	86 bf       	out	0x36, r24	; 54
+			(0<<TWIE)|(1<<TWINT)|											//Enable interrupt
+			(0<<TWEA)|(1<<TWSTA)|(0<<TWSTO)|								//Enabling the start condition bit 
+			(0<<TWWC);														//write collision flag to zero	
+	
+	while(!(TWCR &(1<<TWINT)));												//Wait till flag is cleared	
+ 230:	06 b6       	in	r0, 0x36	; 54
+ 232:	07 fe       	sbrs	r0, 7
+ 234:	fd cf       	rjmp	.-6      	; 0x230 <twi_master_repeatCondition+0x4>
+	
+	if((TWSR & MASK) != MASTER_REPEAT_TRANSMITTED)											//Check the status reg if successful							
+ 236:	91 b1       	in	r25, 0x01	; 1
+ 238:	98 7f       	andi	r25, 0xF8	; 248
+Returns:		Returns a 1 for NOT successful execution and 0 for successful
+Note:			None
+****************************************************************************/
+uint8_t twi_master_repeatCondition(void)
+{
+	uint8_t status = 0;	
+ 23a:	81 e0       	ldi	r24, 0x01	; 1
+ 23c:	90 31       	cpi	r25, 0x10	; 16
+ 23e:	09 f4       	brne	.+2      	; 0x242 <twi_master_repeatCondition+0x16>
+ 240:	80 e0       	ldi	r24, 0x00	; 0
+	{
+		status = 1;															//Error has occurred
+	}
+			
+	return status;
+}
+ 242:	08 95       	ret
+
+00000244 <twi_master_sla_sendAddress>:
+{
+	uint8_t status = 0;
+	uint8_t slave_address = 0;
+	uint8_t ACK = 0;
+		
+	if(read == 1)
+ 244:	61 30       	cpi	r22, 0x01	; 1
+ 246:	21 f4       	brne	.+8      	; 0x250 <twi_master_sla_sendAddress+0xc>
+	{
+		slave_address = (address << 1)| (TWI_READ);
+ 248:	88 0f       	add	r24, r24
+ 24a:	81 60       	ori	r24, 0x01	; 1
+		ACK = MASTER_SLA_R_ACK_RECIEVED;	
+ 24c:	20 e4       	ldi	r18, 0x40	; 64
+ 24e:	02 c0       	rjmp	.+4      	; 0x254 <twi_master_sla_sendAddress+0x10>
+	}
+	else
+	{
+		slave_address = (address << 1)| (TWI_WRITE);
+ 250:	88 0f       	add	r24, r24
+		ACK = MASTER_SLA_W_ACK_RECIEVED;
+ 252:	28 e1       	ldi	r18, 0x18	; 24
+	}	
+		
+	TWDR = slave_address;													//Set the data register with the slave address and the read/write bit
+ 254:	83 b9       	out	0x03, r24	; 3
+	TWCR = (1<<TWINT)|(1<<TWEN);
+ 256:	84 e8       	ldi	r24, 0x84	; 132
+ 258:	86 bf       	out	0x36, r24	; 54
+	
+	while(!(TWCR &(1<<TWINT)));												// wait for flag to be cleared
+ 25a:	06 b6       	in	r0, 0x36	; 54
+ 25c:	07 fe       	sbrs	r0, 7
+ 25e:	fd cf       	rjmp	.-6      	; 0x25a <twi_master_sla_sendAddress+0x16>
+	
+	if((TWSR & MASK) != ACK)
+ 260:	41 b1       	in	r20, 0x01	; 1
+ 262:	50 e0       	ldi	r21, 0x00	; 0
+ 264:	48 7f       	andi	r20, 0xF8	; 248
+ 266:	50 70       	andi	r21, 0x00	; 0
+ 268:	30 e0       	ldi	r19, 0x00	; 0
+Returns:		Returns a 1 for NOT successful execution and 0 for successful
+Note:			None
+****************************************************************************/
+uint8_t twi_master_sla_sendAddress(uint8_t address, uint8_t read)
+{
+	uint8_t status = 0;
+ 26a:	81 e0       	ldi	r24, 0x01	; 1
+ 26c:	42 17       	cp	r20, r18
+ 26e:	53 07       	cpc	r21, r19
+ 270:	09 f4       	brne	.+2      	; 0x274 <twi_master_sla_sendAddress+0x30>
+ 272:	80 e0       	ldi	r24, 0x00	; 0
+	{
+		status = 1;															//Error occured
+	}					
+	
+	return status;
+}
+ 274:	08 95       	ret
+
+00000276 <twi_master_sendData>:
+****************************************************************************/
+uint8_t twi_master_sendData(uint8_t data)
+{
+	uint8_t status = 0;
+	
+	TWDR = data;															//Data to transmit
+ 276:	83 b9       	out	0x03, r24	; 3
+	TWCR = (1<<TWINT)|(1<<TWEN);
+ 278:	84 e8       	ldi	r24, 0x84	; 132
+ 27a:	86 bf       	out	0x36, r24	; 54
+	while(!(TWCR & (1<<TWINT)));
+ 27c:	06 b6       	in	r0, 0x36	; 54
+ 27e:	07 fe       	sbrs	r0, 7
+ 280:	fd cf       	rjmp	.-6      	; 0x27c <twi_master_sendData+0x6>
+	
+	if((TWSR & MASK) != MASTER_DATA_TX_ACK_RECIEVED)
+ 282:	91 b1       	in	r25, 0x01	; 1
+ 284:	98 7f       	andi	r25, 0xF8	; 248
+Returns:		Returns a 1 for NOT successful execution and 0 for successful
+Note:			None
+****************************************************************************/
+uint8_t twi_master_sendData(uint8_t data)
+{
+	uint8_t status = 0;
+ 286:	81 e0       	ldi	r24, 0x01	; 1
+ 288:	98 32       	cpi	r25, 0x28	; 40
+ 28a:	09 f4       	brne	.+2      	; 0x28e <twi_master_sendData+0x18>
+ 28c:	80 e0       	ldi	r24, 0x00	; 0
+	{
+		status = 1;															//Error occurred
+	}	
+	
+	return status;
+}
+ 28e:	08 95       	ret
+
+00000290 <twi_master_readData>:
+****************************************************************************/
+uint8_t twi_master_readData(uint8_t *dataptr)
+{
+	uint8_t status =0;
+					
+	TWCR =	(1<<TWEN)|														//Enables TWI interface
+ 290:	24 ec       	ldi	r18, 0xC4	; 196
+ 292:	26 bf       	out	0x36, r18	; 54
+			(0<<TWIE)|(1<<TWINT)|											//Enable interrupt
+			(1<<TWEA)|(0<<TWSTA)|(0<<TWSTO)|								//Enable ACK bit
+			(0<<TWWC);	
+	
+	while(!(TWCR & (1<<TWINT)));
+ 294:	06 b6       	in	r0, 0x36	; 54
+ 296:	07 fe       	sbrs	r0, 7
+ 298:	fd cf       	rjmp	.-6      	; 0x294 <twi_master_readData+0x4>
+	
+	if((TWSR & MASK) != MASTER_DATA_RX_ACK_TRANSMITTED)
+ 29a:	21 b1       	in	r18, 0x01	; 1
+	{
+		status = 1;															//Error occurred
+	}
+
+	*dataptr = TWDR;														//Received data
+ 29c:	33 b1       	in	r19, 0x03	; 3
+ 29e:	fc 01       	movw	r30, r24
+ 2a0:	30 83       	st	Z, r19
+			(1<<TWEA)|(0<<TWSTA)|(0<<TWSTO)|								//Enable ACK bit
+			(0<<TWWC);	
+	
+	while(!(TWCR & (1<<TWINT)));
+	
+	if((TWSR & MASK) != MASTER_DATA_RX_ACK_TRANSMITTED)
+ 2a2:	92 2f       	mov	r25, r18
+ 2a4:	98 7f       	andi	r25, 0xF8	; 248
+Returns:		Returns a 1 for NOT successful execution and 0 for successful
+Note:			None
+****************************************************************************/
+uint8_t twi_master_readData(uint8_t *dataptr)
+{
+	uint8_t status =0;
+ 2a6:	81 e0       	ldi	r24, 0x01	; 1
+ 2a8:	90 35       	cpi	r25, 0x50	; 80
+ 2aa:	09 f4       	brne	.+2      	; 0x2ae <twi_master_readData+0x1e>
+ 2ac:	80 e0       	ldi	r24, 0x00	; 0
+	}
+
+	*dataptr = TWDR;														//Received data
+	
+	return status;
+}
+ 2ae:	08 95       	ret
+
+000002b0 <twi_master_readFinished>:
+****************************************************************************/
+uint8_t twi_master_readFinished(void)
+{
+	uint8_t status = 0;
+	
+	TWCR =	(1<<TWEN)|														//Enables TWI interface
+ 2b0:	84 e8       	ldi	r24, 0x84	; 132
+ 2b2:	86 bf       	out	0x36, r24	; 54
+			(0<<TWIE)|(1<<TWINT)|											//Enable interrupt
+			(0<<TWEA)|(0<<TWSTA)|(0<<TWSTO)|								//Enabling the start condition bit 
+			(0<<TWWC);	
+			
+	while(!(TWCR & (1<<TWINT)));
+ 2b4:	06 b6       	in	r0, 0x36	; 54
+ 2b6:	07 fe       	sbrs	r0, 7
+ 2b8:	fd cf       	rjmp	.-6      	; 0x2b4 <twi_master_readFinished+0x4>
+	
+	if((TWSR & MASK) != MASTER_DATA_RX_NACK_TRANSMITTED)
+ 2ba:	91 b1       	in	r25, 0x01	; 1
+ 2bc:	98 7f       	andi	r25, 0xF8	; 248
+Returns:		Returns a 1 for NOT successful execution and 0 for successful
+Note:			None
+****************************************************************************/
+uint8_t twi_master_readFinished(void)
+{
+	uint8_t status = 0;
+ 2be:	81 e0       	ldi	r24, 0x01	; 1
+ 2c0:	98 35       	cpi	r25, 0x58	; 88
+ 2c2:	09 f4       	brne	.+2      	; 0x2c6 <twi_master_readFinished+0x16>
+ 2c4:	80 e0       	ldi	r24, 0x00	; 0
+	if((TWSR & MASK) != MASTER_DATA_RX_NACK_TRANSMITTED)
+	{
+		status = 1;															//Error occurred
+	}	
+	return status;
+}
+ 2c6:	08 95       	ret
+
+000002c8 <twi_slave_init>:
+Note:			None
+****************************************************************************/
+uint8_t twi_slave_init(uint8_t slaveaddress)
+{	
+	uint8_t status = 0;	
+	TWAR = (slaveaddress<<1);
+ 2c8:	88 0f       	add	r24, r24
+ 2ca:	82 b9       	out	0x02, r24	; 2
+													//Load the slave address
+	TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWEA);												//Enable twi
+ 2cc:	84 ec       	ldi	r24, 0xC4	; 196
+ 2ce:	86 bf       	out	0x36, r24	; 54
+	
+	while(!(TWCR &(1<<TWINT)));												//Wait till flag is cleared	
+ 2d0:	06 b6       	in	r0, 0x36	; 54
+ 2d2:	07 fe       	sbrs	r0, 7
+ 2d4:	fd cf       	rjmp	.-6      	; 0x2d0 <twi_slave_init+0x8>
+	
+	if((TWSR & MASK) != SLAVE_SLA_W_ACK_TRANSMITTED)											//Check the status reg if successful							
+ 2d6:	91 b1       	in	r25, 0x01	; 1
+ 2d8:	98 7f       	andi	r25, 0xF8	; 248
+Returns:		Returns a 1 for NOT successful execution and 0 for successful
+Note:			None
+****************************************************************************/
+uint8_t twi_slave_init(uint8_t slaveaddress)
+{	
+	uint8_t status = 0;	
+ 2da:	81 e0       	ldi	r24, 0x01	; 1
+ 2dc:	90 36       	cpi	r25, 0x60	; 96
+ 2de:	09 f4       	brne	.+2      	; 0x2e2 <twi_slave_init+0x1a>
+ 2e0:	80 e0       	ldi	r24, 0x00	; 0
+	{
+		status = 1;															//Error has occurred
+	}	
+		
+	return status;
+}
+ 2e2:	08 95       	ret
+
+000002e4 <twi_slave_ACK_tx>:
+****************************************************************************/
+void twi_slave_ACK_tx(void)
+{	
+	uint8_t status = 0;	
+	
+	TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWEA);											
+ 2e4:	84 ec       	ldi	r24, 0xC4	; 196
+ 2e6:	86 bf       	out	0x36, r24	; 54
+	
+	while(!(TWCR &(1<<TWINT)));												//Wait till flag is cleared	
+ 2e8:	06 b6       	in	r0, 0x36	; 54
+ 2ea:	07 fe       	sbrs	r0, 7
+ 2ec:	fd cf       	rjmp	.-6      	; 0x2e8 <twi_slave_ACK_tx+0x4>
+	
+	return status;
+}
+ 2ee:	08 95       	ret
+
+000002f0 <twi_slave_NACK_tx>:
+Returns:		Returns a 1 for NOT successful execution and 0 for successful
+Note:			None
+****************************************************************************/
+void twi_slave_NACK_tx(void)
+{		
+	TWCR = (1<<TWINT)|(1<<TWEN)|(0<<TWEA);											
+ 2f0:	84 e8       	ldi	r24, 0x84	; 132
+ 2f2:	86 bf       	out	0x36, r24	; 54
+	while(!(TWCR &(1<<TWINT)));												//Wait till flag is cleared	
+ 2f4:	06 b6       	in	r0, 0x36	; 54
+ 2f6:	07 fe       	sbrs	r0, 7
+ 2f8:	fd cf       	rjmp	.-6      	; 0x2f4 <twi_slave_NACK_tx+0x4>
+}
+ 2fa:	08 95       	ret
+
+000002fc <i2c_handler>:
+static uint8_t tw_status = 0;
+static uint8_t i =0;	
+	
+void i2c_handler(void)
+{
+	tw_status = TWSR & MASK;
+ 2fc:	81 b1       	in	r24, 0x01	; 1
+ 2fe:	88 7f       	andi	r24, 0xF8	; 248
+ 300:	80 93 6c 00 	sts	0x006C, r24
+	switch(tw_status)
+ 304:	80 38       	cpi	r24, 0x80	; 128
+ 306:	91 f4       	brne	.+36     	; 0x32c <i2c_handler+0x30>
+	{
+		case SLAVE_DATA_RX:
+		{
+			if(i< DATABUFFER)
+ 308:	80 91 6d 00 	lds	r24, 0x006D
+ 30c:	8a 30       	cpi	r24, 0x0A	; 10
+ 30e:	58 f4       	brcc	.+22     	; 0x326 <i2c_handler+0x2a>
+			{
+				databuffer[i] = TWDR;
+ 310:	93 b1       	in	r25, 0x03	; 3
+ 312:	e2 e6       	ldi	r30, 0x62	; 98
+ 314:	f0 e0       	ldi	r31, 0x00	; 0
+ 316:	e8 0f       	add	r30, r24
+ 318:	f1 1d       	adc	r31, r1
+ 31a:	90 83       	st	Z, r25
+				i++;
+ 31c:	8f 5f       	subi	r24, 0xFF	; 255
+ 31e:	80 93 6d 00 	sts	0x006D, r24
+				twi_slave_ACK_tx();
+ 322:	e0 df       	rcall	.-64     	; 0x2e4 <twi_slave_ACK_tx>
+ 324:	08 95       	ret
+			}
+			else
+			{
+				twi_slave_NACK_tx();
+ 326:	e4 df       	rcall	.-56     	; 0x2f0 <twi_slave_NACK_tx>
+				i =0;
+ 328:	10 92 6d 00 	sts	0x006D, r1
+ 32c:	08 95       	ret
+
+0000032e <main>:
+	}	
+}
+
+
+int main(void)
+{
+ 32e:	cf 93       	push	r28
+ 330:	df 93       	push	r29
+	error_init(PORT_D);
+ 332:	82 e0       	ldi	r24, 0x02	; 2
+ 334:	94 de       	rcall	.-728    	; 0x5e <error_init>
+	error_handler(twi_slave_init(0x01));
+ 336:	81 e0       	ldi	r24, 0x01	; 1
+ 338:	c7 df       	rcall	.-114    	; 0x2c8 <twi_slave_init>
+ 33a:	9c de       	rcall	.-712    	; 0x74 <error_handler>
+	twi_slave_ACK_tx();
+ 33c:	d3 df       	rcall	.-90     	; 0x2e4 <twi_slave_ACK_tx>
+
+    while(1)
+    {
+		i2c_handler();
+		if(databuffer[0])
+ 33e:	c2 e6       	ldi	r28, 0x62	; 98
+ 340:	d0 e0       	ldi	r29, 0x00	; 0
+	error_handler(twi_slave_init(0x01));
+	twi_slave_ACK_tx();
+
+    while(1)
+    {
+		i2c_handler();
+ 342:	dc df       	rcall	.-72     	; 0x2fc <i2c_handler>
+		if(databuffer[0])
+ 344:	88 81       	ld	r24, Y
+ 346:	88 23       	and	r24, r24
+ 348:	29 f0       	breq	.+10     	; 0x354 <main+0x26>
+		{
+			IO_write(PORT_D, 5, 1);
+ 34a:	82 e0       	ldi	r24, 0x02	; 2
+ 34c:	65 e0       	ldi	r22, 0x05	; 5
+ 34e:	41 e0       	ldi	r20, 0x01	; 1
+ 350:	c3 de       	rcall	.-634    	; 0xd8 <IO_write>
+ 352:	f7 cf       	rjmp	.-18     	; 0x342 <main+0x14>
+		}
+		else
+		{
+			IO_write(PORT_D, 5, 0);	
+ 354:	82 e0       	ldi	r24, 0x02	; 2
+ 356:	65 e0       	ldi	r22, 0x05	; 5
+ 358:	40 e0       	ldi	r20, 0x00	; 0
+ 35a:	be de       	rcall	.-644    	; 0xd8 <IO_write>
+ 35c:	f2 cf       	rjmp	.-28     	; 0x342 <main+0x14>
+
+0000035e <_exit>:
+ 35e:	f8 94       	cli
+
+00000360 <__stop_program>:
+ 360:	ff cf       	rjmp	.-2      	; 0x360 <__stop_program>

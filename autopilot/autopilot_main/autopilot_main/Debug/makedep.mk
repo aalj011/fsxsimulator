@@ -2,13 +2,11 @@
 # Automatically-generated file. Do not edit or delete the file
 ################################################################################
 
-..\..\drivers\error\error.c
+..\..\..\drivers\error\error.c
 
-..\..\drivers\IO\IO.c
+..\..\..\drivers\IO\IO.c
 
-..\..\drivers\twi\twi.c
+..\..\..\drivers\twi\twi.c
 
-..\..\drivers\usb_serial\usb_serial.c
-
-fsxsim.c
+autopilot_main.c
 
