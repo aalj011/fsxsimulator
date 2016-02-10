@@ -7,23 +7,29 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
+#include <avr/interrupt.h>
+#include "drivers/plateform.h"
 #include "/Projects/Projects/fsxsimulator/fsxsimulator/drivers/IO/IO.h"
 #include "/Projects/Projects/fsxsimulator/fsxsimulator/drivers/twi/twi.h"
 #include "/Projects/Projects/fsxsimulator/fsxsimulator/drivers/twi/twi_defs.h"
 #include "/Projects/Projects/fsxsimulator/fsxsimulator/drivers/error/error.h"
 
-#define AUTOPILOT_ADDRESS 0x01
-#define DATABUFFER	10
-
 static uint8_t databuffer[DATABUFFER] = {0};
 static uint8_t tw_status = 0;
 static uint8_t i =0;	
-	
-void i2c_handler(void)
+
+
+ISR(TWI_vect)
 {
-	tw_status = TWSR & MASK;
+
+	uint8_t tw_status = TWSR & MASK;
 	switch(tw_status)
-	{
+	{	
+		case SLAVE_SLA_W_ACK_TX:
+		{
+			TWCR |= (1<<TWINT);
+			break;
+		}	
 		case SLAVE_DATA_RX:
 		{
 			if(i< DATABUFFER)
@@ -38,20 +44,29 @@ void i2c_handler(void)
 				i =0;
 			}
 			break;
+		}
+		
+		case SLAVE_DATA_RX_NACK:
+		{
+			error_handler(1);
+			break;
 		}	
-	}	
-}
-
+		
+		default:
+		{
+			break;
+		}
+	}
+}	
 
 int main(void)
 {
-	error_init(PORT_D);
-	error_handler(twi_slave_init(0x01));
-	twi_slave_ACK_tx();
-
+	sei();									// enable interrupt
+	error_init(ERROR_PORT);
+	twi_slave_init(AUTOPILOT_ADDRESS);
+	
     while(1)
     {
-		i2c_handler();
 		if(databuffer[0])
 		{
 			IO_write(PORT_D, 5, 1);

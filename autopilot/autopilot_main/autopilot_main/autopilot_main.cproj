@@ -87,6 +87,9 @@
     <Compile Include="autopilot_main.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="drivers\plateform.h">
+      <SubType>compile</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="drivers" />

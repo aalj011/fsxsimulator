@@ -19,8 +19,8 @@ void error_init(ports port)
 	error_port = port;
 	
 	// clear the io required
-	IO_write(error_port, 6,0); // red lgiht
-	IO_write(error_port,7,0);  // green light
+	IO_write(error_port, 6,1); // green lgiht
+	IO_write(error_port,7,0);  // red light
 }
 
 
@@ -35,10 +35,7 @@ void error_handler(uint8_t status)
 		// error has been generated stay in this while loop
 		while(1)
 		{
-			_delay_ms(2000);
-			IO_write(error_port,7,1);
-			_delay_ms(2000);
-			IO_write(error_port,7,0);
+			IO_flash(error_port,7);
 		}
 	}
 	else

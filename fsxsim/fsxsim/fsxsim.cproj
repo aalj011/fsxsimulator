@@ -93,6 +93,9 @@
       <SubType>compile</SubType>
       <Link>drivers\usb_serial.h</Link>
     </Compile>
+    <Compile Include="drivers\plateform.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="fsxsim.c">
       <SubType>compile</SubType>
     </Compile>

@@ -20,5 +20,6 @@ typedef enum
 
 uint8_t IO_read(ports port, uint8_t pinnumber);
 void IO_write(ports port, uint8_t pinnumber, uint8_t state);
+void IO_flash(ports port, uint8_t pinnumber);
 
 #endif /* IO_H_ */

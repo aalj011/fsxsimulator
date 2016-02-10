@@ -5,6 +5,7 @@
  *  Author: Ali
  */ 
 #include <avr/io.h>
+#include <util/delay.h>
 #include "IO.h"
 
 /*
@@ -189,4 +190,12 @@ uint8_t IO_read(ports port, uint8_t pinnumber)
 	}
 	
 	return pinvalue;
+}
+
+void IO_flash(ports port, uint8_t pinnumber)
+{
+	IO_write(port, pinnumber, 0);
+	_delay_ms(2000);
+	IO_write(port, pinnumber, 1);
+	_delay_ms(2000);
 }

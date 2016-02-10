@@ -15,6 +15,8 @@ fsxsim.d fsxsim.o: .././fsxsim.c \
  c:\program\ files\ (x86)\atmel\avr\ studio\ 5.1\extensions\atmel\avrgcc\3.3.1.27\avrtoolchain\bin\../lib/gcc/avr/4.5.1/../../../../avr/include/stdio.h \
  c:\program\ files\ (x86)\atmel\avr\ studio\ 5.1\extensions\atmel\avrgcc\3.3.1.27\avrtoolchain\bin\../lib/gcc/avr/4.5.1/include/stdarg.h \
  c:\program\ files\ (x86)\atmel\avr\ studio\ 5.1\extensions\atmel\avrgcc\3.3.1.27\avrtoolchain\bin\../lib/gcc/avr/4.5.1/include/stddef.h \
+ c:\program\ files\ (x86)\atmel\avr\ studio\ 5.1\extensions\atmel\avrgcc\3.3.1.27\avrtoolchain\bin\../lib/gcc/avr/4.5.1/../../../../avr/include/avr/interrupt.h \
+ .././drivers/plateform.h \
  /Projects/Projects/fsxsimulator/fsxsimulator/drivers/IO/IO.h \
  /Projects/Projects/fsxsimulator/fsxsimulator/drivers/usb_serial/usb_serial.h \
  /Projects/Projects/fsxsimulator/fsxsimulator/drivers/twi/twi.h \
@@ -52,6 +54,10 @@ c:\program\ files\ (x86)\atmel\avr\ studio\ 5.1\extensions\atmel\avrgcc\3.3.1.27
 c:\program\ files\ (x86)\atmel\avr\ studio\ 5.1\extensions\atmel\avrgcc\3.3.1.27\avrtoolchain\bin\../lib/gcc/avr/4.5.1/include/stdarg.h:
 
 c:\program\ files\ (x86)\atmel\avr\ studio\ 5.1\extensions\atmel\avrgcc\3.3.1.27\avrtoolchain\bin\../lib/gcc/avr/4.5.1/include/stddef.h:
+
+c:\program\ files\ (x86)\atmel\avr\ studio\ 5.1\extensions\atmel\avrgcc\3.3.1.27\avrtoolchain\bin\../lib/gcc/avr/4.5.1/../../../../avr/include/avr/interrupt.h:
+
+.././drivers/plateform.h:
 
 /Projects/Projects/fsxsimulator/fsxsimulator/drivers/IO/IO.h:
 
