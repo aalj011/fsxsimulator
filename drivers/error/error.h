@@ -9,5 +9,5 @@
 #ifndef ERROR_H_
 #define ERROR_H_
 void error_handler(uint8_t status);
-void error_init(ports port);
+void error_init(ports port, uint8_t green_led_pin, uint8_t red_led_pin);
 #endif /* ERROR_H_ */

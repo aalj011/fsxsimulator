@@ -1,19 +1,18 @@
 
+#include "plateform.h"
 #include <avr/io.h>
 #include <stdint.h>
 #include <util/delay.h>
 #include <stdio.h>
 #include <avr/interrupt.h>
-#include "drivers/plateform.h"
-#include "/Projects/Projects/fsxsimulator/fsxsimulator/drivers/IO/IO.h"
-#include "/Projects/Projects/fsxsimulator/fsxsimulator/drivers/usb_serial/usb_serial.h"
-#include "/Projects/Projects/fsxsimulator/fsxsimulator/drivers/twi/twi.h"
-#include "/Projects/Projects/fsxsimulator/fsxsimulator/drivers/twi/twi_defs.h"
-#include "/Projects/Projects/fsxsimulator/fsxsimulator/drivers/error/error.h"
-
+#include "IO.h"
+#include "usb_serial.h"
+#include "twi.h"
+#include "twi_defs.h"
+#include "error.h"
+#include "common.h"
 
 static uint8_t data = 0x01;
-static uint8_t slaveaddy = 0x01;
 
 ISR(TWI_vect)
 {
@@ -23,7 +22,7 @@ ISR(TWI_vect)
 		//Successfully transmitted start condition
 		case MASTER_START_TRANSMITTED:
 		{
-			twi_master_sla_sendAddress(slaveaddy, 0);					// broadcast slave address
+			twi_master_sla_sendAddress(AUTOPILOT_ADDRESS, TWI_READ);					// broadcast slave address
 			break;
 		}
 		case MASTER_REPEAT_TRANSMITTED:
@@ -36,7 +35,7 @@ ISR(TWI_vect)
 		}
 		case MASTER_SLA_R_NACK_RECIEVED:
 		{
-			error_handler(1);											// error occurred
+			error_handler(SET);											// error occurred
 			break;
 		}
 		case MASTER_SLA_W_ACK_RECIEVED:
@@ -46,7 +45,7 @@ ISR(TWI_vect)
 		}
 		case MASTER_SLA_W_NACK_RECIEVED:
 		{
-			error_handler(1);											// error occurred
+			error_handler(SET);											// error occurred
 			break;
 		}
 		case MASTER_DATA_TX_ACK_RECIEVED:
@@ -57,12 +56,12 @@ ISR(TWI_vect)
 		}
 		case MASTER_DATA_TX_NACK_RECIEVED:
 		{
-			error_handler(1);
+			error_handler(SET);
 			break;
 		}
 		case MASTER_DATA_RX_NACK_TRANSMITTED:
 		{
-			error_handler(1);													// error occurred	
+			error_handler(SET);													// error occurred	
 			//*dataptr = TWDR;
 			break;
 		}
@@ -77,9 +76,8 @@ ISR(TWI_vect)
 
 int main(void)
 {
-	//CPU_PRESCALE(0);
 	sei();
-	error_init(ERROR_PORT);	
+	error_init(ERROR_PORT, ERROR_LED_GREEN_PIN, ERROR_LED_RED_PIN);	
 	twi_master_init();
 	twi_master_start_condition();
 	

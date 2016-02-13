@@ -1,4 +1,3 @@
-
 /*
  * error.c
  *
@@ -10,37 +9,43 @@
 #include <stdint.h>
 #include <util/delay.h>
 #include <stdio.h>
-#include "/Projects/Projects/fsxsimulator/fsxsimulator/drivers/IO/IO.h"
+#include "IO.h"
+#include "common.h"
 
-static ports error_port = PORT_C;
+//Local variables
+static ports error_port;
+static uint8_t error_green_led_pin;
+static uint8_t error_red_led_pin;
 
-void error_init(ports port)
+void error_init(ports port, uint8_t green_led_pin, uint8_t red_led_pin)
 {
 	error_port = port;
+	error_red_led_pin = red_led_pin;
+	error_green_led_pin = green_led_pin;
 	
 	// clear the io required
-	IO_write(error_port, 6,1); // green lgiht
-	IO_write(error_port,7,0);  // red light
+	IO_write(error_port,error_green_led_pin,SET);		// green light
+	IO_write(error_port,error_red_led_pin,CLEAR);		// red light
 }
 
 
 void error_handler(uint8_t status)
 {
 	// clear the io required
-	IO_write(error_port, 6,0);
-	IO_write(error_port,7,0);
+	IO_write(error_port,error_green_led_pin,CLEAR);
+	IO_write(error_port,error_red_led_pin,CLEAR);
 
 	if(status)
 	{
 		// error has been generated stay in this while loop
 		while(1)
 		{
-			IO_flash(error_port,7);
+			IO_flash(error_port,error_red_led_pin);
 		}
 	}
 	else
 	{
 		// no error generated
-		IO_write(error_port,6,1);
+		IO_write(error_port,error_green_led_pin,SET);
 	}
 }

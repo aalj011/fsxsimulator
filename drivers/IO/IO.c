@@ -7,15 +7,16 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include "IO.h"
+#include "common.h"
 
-/*
-** Name:		IO_write
-** Purpose:		sets the pin on a port to an output with the required state
-** Parameters:	portname, char which specifies with port name to address must be
+/*****************************************************************************
+Name:			IO_write
+Purpose:		sets the pin on a port to an output with the required state
+Parameters:		port name, char which specifies with port name to address must be
 				in capital letters. pinnumber specifies which pin to address
 				state specifies whether we want to set the pin high or low.
-** Note: 
-*/
+Note:			None
+*****************************************************************************/
 void IO_write(ports port, uint8_t pinnumber,uint8_t state)
 {
 	switch (port)
@@ -107,16 +108,13 @@ void IO_write(ports port, uint8_t pinnumber,uint8_t state)
 	}
 }
 
-
-/*
-** Name:		IO_read
-** Purpose:		Read the required pin on the micro at a specific port
-** Parameters:	port this specifies the port required
+/*****************************************************************************
+Name:			IO_read
+Purpose:		Read the required pin on the micro at a specific port
+Parameters:		port this specifies the port required
 				pinnumber specifies which pin we want to address (to read)
-				
-** Note: 
-** Returns:		returns a 1 or 0 depending on the state of the pin read.
-*/
+Returns:		returns a 1 or 0 depending on the state of the pin read
+*****************************************************************************/
 uint8_t IO_read(ports port, uint8_t pinnumber)
 {
 	uint8_t pinvalue = 0;
@@ -191,11 +189,16 @@ uint8_t IO_read(ports port, uint8_t pinnumber)
 	
 	return pinvalue;
 }
-
+/*****************************************************************************
+Name:			IO_flash
+Purpose:		Flashes the IO of choosing (only once)
+Parameters:		port this specifies the port required to flash and Pin number
+Returns:		None
+*****************************************************************************/
 void IO_flash(ports port, uint8_t pinnumber)
 {
-	IO_write(port, pinnumber, 0);
+	IO_write(port, pinnumber, CLEAR);
 	_delay_ms(2000);
-	IO_write(port, pinnumber, 1);
+	IO_write(port, pinnumber, SET);
 	_delay_ms(2000);
 }

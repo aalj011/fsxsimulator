@@ -40,8 +40,7 @@ Returns:		None
 Note:			None
 ****************************************************************************/
 void twi_master_start_condition(void)
-{
-	uint8_t status = 0;	
+{	
 	TWCR =	(1<<TWEN)|														//Enables TWI interface
 			(1<<TWIE)|(1<<TWINT)|											//Enable interrupt
 			(0<<TWEA)|(1<<TWSTA)|(0<<TWSTO)|								//Enabling the start condition bit 
@@ -71,9 +70,8 @@ Parameters:		none
 Returns:		None
 Note:			None
 ****************************************************************************/
-void twi_master_repeatCondition(void)
+void twi_master_repeat_condition(void)
 {
-	uint8_t status = 0;	
 	TWCR =	(1<<TWEN)|														//Enables TWI interface
 			(1<<TWIE)|(1<<TWINT)|											//Enable interrupt
 			(0<<TWEA)|(1<<TWSTA)|(0<<TWSTO)|								//Enabling the start condition bit 
@@ -90,23 +88,13 @@ Parameters:		address, the address of the device slave required, a list of
 Returns:		Returns a 1 for NOT successful execution and 0 for successful
 Note:			None
 ****************************************************************************/
-void twi_master_sla_sendAddress(uint8_t address, uint8_t read)
+void twi_master_sla_send_address(uint8_t address, uint8_t read)
 {
-	uint8_t status = 0;
 	uint8_t slave_address = 0;
-	uint8_t ACK = 0;
-		
-	if(read == 1)
-	{
-		slave_address = (address << 1)| (TWI_READ);
-	}
-	else
-	{
-		slave_address = (address << 1)| (TWI_WRITE);
-	}	
-		
+	slave_address = (address << 1)| (read);
+	
 	TWDR = slave_address;													//Set the data register with the slave address and the read/write bit
-	TWCR = (1<<TWEN)|														//Enables TWI interface
+	TWCR =	(1<<TWEN)|														//Enables TWI interface
 			(1<<TWIE)|(1<<TWINT)|											//Enable interrupt
 			(1<<TWEA)|(0<<TWSTA)|(0<<TWSTO)|								//Enabling the start condition bit 
 			(0<<TWWC);		
@@ -119,46 +107,42 @@ Parameters:		uint8_t data to be written.
 Returns:		None
 Note:			None
 ****************************************************************************/
-void twi_master_sendData(uint8_t data)
+void twi_master_send_data(uint8_t data)
 {	
 	TWDR = data;
-	TWCR = (1<<TWEN)|														//Enables TWI interface
-		(1<<TWIE)|(1<<TWINT)|											//Enable interrupt
-		(0<<TWEA)|(0<<TWSTA)|(0<<TWSTO)|								//Enabling the start condition bit 
-		(0<<TWWC);																//Data to transmit
-}
-
-/*****************************************************************************
-Name:			twi_master_readData
-Purpose:		This function reads the data to be from the slave slave address.
-Parameters:		uint8_t dataptr pointer which points to the passed variable
-				to hold the recieved data.
-Returns:		None
-Note:			None
-****************************************************************************/
-void twi_master_readData(void)
-{
 	TWCR =	(1<<TWEN)|														//Enables TWI interface
-			(1<<TWIE)|(1<<TWINT)|											//Enable interrupt
-			(1<<TWEA)|(0<<TWSTA)|(0<<TWSTO)|								//Enable ACK bit
-			(0<<TWWC);	
+			(1<<TWIE)|(1<<TWINT)|												//Enable interrupt
+			(0<<TWEA)|(0<<TWSTA)|(0<<TWSTO)|									//Enabling the start condition bit 
+			(0<<TWWC);															//Data to transmit
 }
 /*****************************************************************************
-Name:			twi_master_readFinished
+Name:			twi_master_tx_nack
 Purpose:		This transmits a NACK to the slave telling the slave we have
-				finished reading data.
 Parameters:		None.
 Returns:		None
 Note:			None
 ****************************************************************************/
-void twi_master_readFinished(void)
+void twi_master_tx_nack(void)
 {
 	TWCR =	(1<<TWEN)|														//Enables TWI interface
 			(1<<TWIE)|(1<<TWINT)|											//Enable interrupt
 			(0<<TWEA)|(0<<TWSTA)|(0<<TWSTO)|								//Enabling the start condition bit 
 			(0<<TWWC);	
 }
-
+/*****************************************************************************
+Name:			twi_master_tx_ack
+Purpose:		This transmits a ACK to the slave telling the slave we have
+Parameters:		None.
+Returns:		None
+Note:			None
+****************************************************************************/
+void twi_master_tx_ack(void)
+{
+	TWCR =	(1<<TWEN)|														//Enables TWI interface
+			(1<<TWIE)|(1<<TWINT)|											//Enable interrupt
+			(1<<TWEA)|(0<<TWSTA)|(0<<TWSTO)|								//Enabling the start condition bit
+			(0<<TWWC);
+}
 /*****************************************************************************
 Name:			twi_slave_init
 Purpose:		This function invokes the start condition for twi communication
@@ -178,15 +162,15 @@ void twi_slave_init(uint8_t slaveaddress)
 	flagwait();														//Wait till flag is cleared	
 }
 /*****************************************************************************
-Name:			twi_slave_ACK_tx
+Name:			twi_slave_tx_ack
 Purpose:		transmitters ACK to master
 Parameters:		none
 Returns:		None
 Note:			None
 ****************************************************************************/
-void twi_slave_ACK_tx(void)
+void twi_slave_tx_ack(void)
 {	
-	TWCR = (1<<TWEN)|														//Enables TWI interface
+	TWCR =	(1<<TWEN)|														//Enables TWI interface
 			(1<<TWIE)|(1<<TWINT)|											//Enable interrupt
 			(1<<TWEA)|(0<<TWSTA)|(0<<TWSTO)|								//Enabling the start condition bit 
 			(0<<TWWC);										
@@ -198,11 +182,42 @@ Parameters:		none
 Returns:		None
 Note:			None
 ****************************************************************************/
-void twi_slave_NACK_tx(void)
+void twi_slave_tx_nack(void)
 {		
 	TWCR = (1<<TWINT)|(1<<TWEN)|(0<<TWEA)|(1<<TWIE);											
 }
 
+/*****************************************************************************
+Name:			twi_readData
+Purpose:		This function reads the data from TWDR.
+Parameters:		None
+Returns:		None
+Note:			None
+****************************************************************************/
+uint8_t twi_read_data(void)
+{
+	uint8_t rxdata = 0;
+	TWDR = rxdata;
+
+	/*
+	TWCR =	(1<<TWEN)|														//Enables TWI interface
+			(1<<TWIE)|(1<<TWINT)|											//Enable interrupt
+			(1<<TWEA)|(0<<TWSTA)|(0<<TWSTO)|								//Enable ACK bit
+			(0<<TWWC);
+	*/	
+	return rxdata;
+}
+/*****************************************************************************
+Name:			clear_twint
+Purpose:		Clears TWINT flag
+Parameters:		none
+Returns:		None
+Note:			None
+****************************************************************************/
+void clear_twint(void)
+{
+	TWCR |=(1<<TWINT);
+}
 /*****************************************************************************
 Name:			flagwait
 Purpose:		Waits for TWINT to be cleared
