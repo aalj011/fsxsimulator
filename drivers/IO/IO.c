@@ -7,7 +7,7 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include "IO.h"
-#include "common.h"
+#include "common_defs.h"
 
 /*****************************************************************************
 Name:			IO_write

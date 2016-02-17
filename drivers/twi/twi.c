@@ -157,9 +157,9 @@ void twi_slave_init(uint8_t slaveaddress)
 	TWCR = (1<<TWEN)|														//Enables TWI interface
 			(1<<TWIE)|(1<<TWINT)|											//Enable interrupt
 			(1<<TWEA)|(0<<TWSTA)|(0<<TWSTO)|								//Enabling the start condition bit 
-			(0<<TWWC);												//Enable twi
-	
-	flagwait();														//Wait till flag is cleared	
+			(0<<TWWC);														//Enable twi
+																			//Wait till flag is cleared	
+	flagwait();
 }
 /*****************************************************************************
 Name:			twi_slave_tx_ack
@@ -197,24 +197,23 @@ Note:			None
 uint8_t twi_read_data(void)
 {
 	uint8_t rxdata = 0;
-	TWDR = rxdata;
-
+	rxdata = TWDR;
+	twi_clear_twint();
 	/*
 	TWCR =	(1<<TWEN)|														//Enables TWI interface
 			(1<<TWIE)|(1<<TWINT)|											//Enable interrupt
-			(1<<TWEA)|(0<<TWSTA)|(0<<TWSTO)|								//Enable ACK bit
-			(0<<TWWC);
-	*/	
+			(1<<TWEA)|(0<<TWSTA)|(0<<TWSTO);								//Enable ACK bit
+	*/
 	return rxdata;
 }
 /*****************************************************************************
-Name:			clear_twint
+Name:			twi_clear_twint
 Purpose:		Clears TWINT flag
 Parameters:		none
 Returns:		None
 Note:			None
 ****************************************************************************/
-void clear_twint(void)
+void twi_clear_twint(void)
 {
 	TWCR |=(1<<TWINT);
 }
@@ -228,4 +227,9 @@ Note:			None
 static void flagwait(void)
 {
 	while(!(TWCR &(1<<TWINT)));
+}
+
+void twi_wait(void)
+{
+	flagwait();
 }

@@ -9,8 +9,9 @@
 #include <stdint.h>
 #include <util/delay.h>
 #include <stdio.h>
+#include "common_defs.h"
 #include "IO.h"
-#include "common.h"
+
 
 //Local variables
 static ports error_port;

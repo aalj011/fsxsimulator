@@ -5,6 +5,11 @@ c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/..
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr4\libgcc.a(_clear_bss.o)
                               drivers/error.o (__do_clear_bss)
 
+Allocating common symbols
+Common symbol       size              file
+
+tw_status           0x1               autopilot_main.o
+
 Discarded input sections
 
  .data          0x00000000        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.0.90/gcc/dev/atmega8/avr4/crtatmega8.o
@@ -12,6 +17,8 @@ Discarded input sections
  .text          0x00000000        0x0 drivers/error.o
  .data          0x00000000        0x0 drivers/error.o
  .bss           0x00000000        0x0 drivers/error.o
+ .text.error_handler
+                0x00000000       0x3c drivers/error.o
  .text          0x00000000        0x0 drivers/IO.o
  .data          0x00000000        0x0 drivers/IO.o
  .bss           0x00000000        0x0 drivers/IO.o
@@ -25,19 +32,24 @@ Discarded input sections
                 0x00000000        0x6 drivers/twi.o
  .text.twi_master_stop_condition
                 0x00000000        0x6 drivers/twi.o
- .text.twi_master_repeatCondition
+ .text.twi_master_repeat_condition
                 0x00000000        0x6 drivers/twi.o
- .text.twi_master_sla_sendAddress
-                0x00000000       0x14 drivers/twi.o
- .text.twi_master_sendData
+ .text.twi_master_sla_send_address
+                0x00000000        0xc drivers/twi.o
+ .text.twi_master_send_data
                 0x00000000        0x8 drivers/twi.o
- .text.twi_master_readData
+ .text.twi_master_tx_nack
                 0x00000000        0x6 drivers/twi.o
- .text.twi_master_readFinished
+ .text.twi_master_tx_ack
                 0x00000000        0x6 drivers/twi.o
+ .text.twi_read_data
+                0x00000000        0xc drivers/twi.o
+ .text.twi_wait
+                0x00000000        0x8 drivers/twi.o
  .text          0x00000000        0x0 autopilot_main.o
  .data          0x00000000        0x0 autopilot_main.o
  .bss           0x00000000        0x0 autopilot_main.o
+ .bss.data_rx   0x00000000        0x1 autopilot_main.o
  .text          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr4\libgcc.a(_exit.o)
  .data          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr4\libgcc.a(_exit.o)
  .bss           0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr4\libgcc.a(_exit.o)
@@ -190,7 +202,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x23e
+.text           0x00000000      0x21a
  *(.vectors)
  .vectors       0x00000000       0x26 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.0.90/gcc/dev/atmega8/avr4/crtatmega8.o
                 0x00000000                __vector_default
@@ -268,34 +280,34 @@ END GROUP
  .text.error_init
                 0x00000048       0x1e drivers/error.o
                 0x00000048                error_init
- .text.error_handler
-                0x00000066       0x3c drivers/error.o
-                0x00000066                error_handler
  .text.IO_write
-                0x000000a2       0x8a drivers/IO.o
-                0x000000a2                IO_write
+                0x00000066       0x8a drivers/IO.o
+                0x00000066                IO_write
  .text.IO_flash
-                0x0000012c       0x3e drivers/IO.o
-                0x0000012c                IO_flash
+                0x000000f0       0x3e drivers/IO.o
+                0x000000f0                IO_flash
  .text.twi_slave_init
-                0x0000016a       0x10 drivers/twi.o
-                0x0000016a                twi_slave_init
- .text.twi_slave_ACK_tx
-                0x0000017a        0x6 drivers/twi.o
-                0x0000017a                twi_slave_ACK_tx
- .text.twi_slave_NACK_tx
-                0x00000180        0x6 drivers/twi.o
-                0x00000180                twi_slave_NACK_tx
+                0x0000012e       0x10 drivers/twi.o
+                0x0000012e                twi_slave_init
+ .text.twi_slave_tx_ack
+                0x0000013e        0x6 drivers/twi.o
+                0x0000013e                twi_slave_tx_ack
+ .text.twi_slave_tx_nack
+                0x00000144        0x6 drivers/twi.o
+                0x00000144                twi_slave_tx_nack
+ .text.twi_clear_twint
+                0x0000014a        0x8 drivers/twi.o
+                0x0000014a                twi_clear_twint
  .text.__vector_17
-                0x00000186       0x88 autopilot_main.o
-                0x00000186                __vector_17
- .text.main     0x0000020e       0x2c autopilot_main.o
-                0x0000020e                main
-                0x0000023a                . = ALIGN (0x2)
+                0x00000152       0x94 autopilot_main.o
+                0x00000152                __vector_17
+ .text.main     0x000001e6       0x30 autopilot_main.o
+                0x000001e6                main
+                0x00000216                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x0000023a        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr4\libgcc.a(_exit.o)
-                0x0000023a                _exit
-                0x0000023a                exit
+ .fini9         0x00000216        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr4\libgcc.a(_exit.o)
+                0x00000216                _exit
+                0x00000216                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -314,11 +326,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x0000023a        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr4\libgcc.a(_exit.o)
+ .fini0         0x00000216        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.9.2/avr4\libgcc.a(_exit.o)
  *(.fini0)
-                0x0000023e                _etext = .
+                0x0000021a                _etext = .
 
-.data           0x00800060        0x0 load address 0x0000023e
+.data           0x00800060        0x0 load address 0x0000021a
                 0x00800060                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
@@ -329,7 +341,7 @@ END GROUP
                 0x00800060                _edata = .
                 0x00800060                PROVIDE (__data_end, .)
 
-.bss            0x00800060        0xe
+.bss            0x00800060        0x8
                 0x00800060                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
@@ -339,20 +351,23 @@ END GROUP
                 0x00800061        0x1 drivers/error.o
  .bss.error_port
                 0x00800062        0x1 drivers/error.o
- .bss.i         0x00800063        0x1 autopilot_main.o
+ .bss.data_rx_count
+                0x00800063        0x1 autopilot_main.o
  .bss.databuffer
-                0x00800064        0xa autopilot_main.o
+                0x00800064        0x3 autopilot_main.o
  *(COMMON)
-                0x0080006e                PROVIDE (__bss_end, .)
-                0x0000023e                __data_load_start = LOADADDR (.data)
-                0x0000023e                __data_load_end = (__data_load_start + SIZEOF (.data))
+ COMMON         0x00800067        0x1 autopilot_main.o
+                0x00800067                tw_status
+                0x00800068                PROVIDE (__bss_end, .)
+                0x0000021a                __data_load_start = LOADADDR (.data)
+                0x0000021a                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x0080006e        0x0
-                0x0080006e                PROVIDE (__noinit_start, .)
+.noinit         0x00800068        0x0
+                0x00800068                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x0080006e                PROVIDE (__noinit_end, .)
-                0x0080006e                _end = .
-                0x0080006e                PROVIDE (__heap_start, .)
+                0x00800068                PROVIDE (__noinit_end, .)
+                0x00800068                _end = .
+                0x00800068                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
  *(.eeprom*)
@@ -419,65 +434,65 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000       0xf0
+.debug_aranges  0x00000000      0x108
  *(.debug_aranges)
  .debug_aranges
                 0x00000000       0x28 drivers/error.o
  .debug_aranges
                 0x00000028       0x30 drivers/IO.o
  .debug_aranges
-                0x00000058       0x70 drivers/twi.o
+                0x00000058       0x88 drivers/twi.o
  .debug_aranges
-                0x000000c8       0x28 autopilot_main.o
+                0x000000e0       0x28 autopilot_main.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0x839
+.debug_info     0x00000000      0x8e5
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x1ec drivers/error.o
  .debug_info    0x000001ec      0x25d drivers/IO.o
- .debug_info    0x00000449      0x1d6 drivers/twi.o
- .debug_info    0x0000061f      0x21a autopilot_main.o
+ .debug_info    0x00000449      0x24b drivers/twi.o
+ .debug_info    0x00000694      0x251 autopilot_main.o
 
-.debug_abbrev   0x00000000      0x43f
+.debug_abbrev   0x00000000      0x462
  *(.debug_abbrev)
  .debug_abbrev  0x00000000       0xfb drivers/error.o
  .debug_abbrev  0x000000fb      0x15f drivers/IO.o
- .debug_abbrev  0x0000025a       0xb6 drivers/twi.o
- .debug_abbrev  0x00000310      0x12f autopilot_main.o
+ .debug_abbrev  0x0000025a       0xe6 drivers/twi.o
+ .debug_abbrev  0x00000340      0x122 autopilot_main.o
 
-.debug_line     0x00000000      0x4f5
+.debug_line     0x00000000      0x534
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000       0xf2 drivers/error.o
  .debug_line    0x000000f2      0x172 drivers/IO.o
- .debug_line    0x00000264      0x166 drivers/twi.o
- .debug_line    0x000003ca      0x12b autopilot_main.o
+ .debug_line    0x00000264      0x19a drivers/twi.o
+ .debug_line    0x000003fe      0x136 autopilot_main.o
 
-.debug_frame    0x00000000      0x1cc
+.debug_frame    0x00000000      0x204
  *(.debug_frame)
  .debug_frame   0x00000000       0x3c drivers/error.o
  .debug_frame   0x0000003c       0x50 drivers/IO.o
- .debug_frame   0x0000008c       0xc4 drivers/twi.o
- .debug_frame   0x00000150       0x7c autopilot_main.o
+ .debug_frame   0x0000008c       0xfc drivers/twi.o
+ .debug_frame   0x00000188       0x7c autopilot_main.o
 
-.debug_str      0x00000000      0x3d3
+.debug_str      0x00000000      0x424
  *(.debug_str)
- .debug_str     0x00000000      0x1d2 drivers/error.o
-                                0x231 (size before relaxing)
- .debug_str     0x000001d2       0x88 drivers/IO.o
-                                0x227 (size before relaxing)
- .debug_str     0x0000025a      0x134 drivers/twi.o
-                                0x2a5 (size before relaxing)
- .debug_str     0x0000038e       0x45 autopilot_main.o
-                                0x221 (size before relaxing)
+ .debug_str     0x00000000      0x1e8 drivers/error.o
+                                0x247 (size before relaxing)
+ .debug_str     0x000001e8       0x88 drivers/IO.o
+                                0x23d (size before relaxing)
+ .debug_str     0x00000270      0x159 drivers/twi.o
+                                0x2e5 (size before relaxing)
+ .debug_str     0x000003c9       0x5b autopilot_main.o
+                                0x258 (size before relaxing)
 
-.debug_loc      0x00000000      0x438
+.debug_loc      0x00000000      0x430
  *(.debug_loc)
  .debug_loc     0x00000000       0xc0 drivers/error.o
  .debug_loc     0x000000c0      0x1aa drivers/IO.o
- .debug_loc     0x0000026a       0xca drivers/twi.o
- .debug_loc     0x00000334      0x104 autopilot_main.o
+ .debug_loc     0x0000026a       0xfb drivers/twi.o
+ .debug_loc     0x00000365       0xcb autopilot_main.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -497,12 +512,12 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000       0xb0
+.debug_ranges   0x00000000       0xc8
  *(.debug_ranges)
  .debug_ranges  0x00000000       0x18 drivers/error.o
  .debug_ranges  0x00000018       0x20 drivers/IO.o
- .debug_ranges  0x00000038       0x60 drivers/twi.o
- .debug_ranges  0x00000098       0x18 autopilot_main.o
+ .debug_ranges  0x00000038       0x78 drivers/twi.o
+ .debug_ranges  0x000000b0       0x18 autopilot_main.o
 
 .debug_macro
  *(.debug_macro)

@@ -23,8 +23,8 @@ void twi_slave_init(uint8_t slaveaddress);
 void twi_slave_tx_ack(void);
 void twi_slave_tx_nack(void);
 
-void clear_twint(void)
+void twi_clear_twint(void);
 uint8_t twi_read_data(void);
-
+void twi_wait(void);
 
 #endif /* TWI_H_ */

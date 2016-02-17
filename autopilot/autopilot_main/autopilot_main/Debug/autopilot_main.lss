@@ -3,31 +3,31 @@ autopilot_main.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         0000023e  00000000  00000000  00000074  2**1
+  0 .text         0000021a  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000000  00800060  00800060  000002b2  2**0
+  1 .data         00000000  00800060  00800060  0000028e  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          0000000e  00800060  00800060  000002b2  2**0
+  2 .bss          00000008  00800060  00800060  0000028e  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  000002b2  2**0
+  3 .comment      00000030  00000000  00000000  0000028e  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000002e4  2**2
+  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000002c0  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 000000f0  00000000  00000000  00000320  2**0
+  5 .debug_aranges 00000108  00000000  00000000  000002fc  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00000839  00000000  00000000  00000410  2**0
+  6 .debug_info   000008e5  00000000  00000000  00000404  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 0000043f  00000000  00000000  00000c49  2**0
+  7 .debug_abbrev 00000462  00000000  00000000  00000ce9  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000004f5  00000000  00000000  00001088  2**0
+  8 .debug_line   00000534  00000000  00000000  0000114b  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  000001cc  00000000  00000000  00001580  2**2
+  9 .debug_frame  00000204  00000000  00000000  00001680  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    000003d3  00000000  00000000  0000174c  2**0
+ 10 .debug_str    00000424  00000000  00000000  00001884  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00000438  00000000  00000000  00001b1f  2**0
+ 11 .debug_loc    00000430  00000000  00000000  00001ca8  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 000000b0  00000000  00000000  00001f57  2**0
+ 12 .debug_ranges 000000c8  00000000  00000000  000020d8  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -50,7 +50,7 @@ Disassembly of section .text:
   1c:	14 c0       	rjmp	.+40     	; 0x46 <__bad_interrupt>
   1e:	13 c0       	rjmp	.+38     	; 0x46 <__bad_interrupt>
   20:	12 c0       	rjmp	.+36     	; 0x46 <__bad_interrupt>
-  22:	b1 c0       	rjmp	.+354    	; 0x186 <__vector_17>
+  22:	97 c0       	rjmp	.+302    	; 0x152 <__vector_17>
   24:	10 c0       	rjmp	.+32     	; 0x46 <__bad_interrupt>
 
 00000026 <__ctors_end>:
@@ -71,11 +71,11 @@ Disassembly of section .text:
   3a:	1d 92       	st	X+, r1
 
 0000003c <.do_clear_bss_start>:
-  3c:	ae 36       	cpi	r26, 0x6E	; 110
+  3c:	a8 36       	cpi	r26, 0x68	; 104
   3e:	b2 07       	cpc	r27, r18
   40:	e1 f7       	brne	.-8      	; 0x3a <.do_clear_bss_loop>
-  42:	e5 d0       	rcall	.+458    	; 0x20e <main>
-  44:	fa c0       	rjmp	.+500    	; 0x23a <_exit>
+  42:	d1 d0       	rcall	.+418    	; 0x1e6 <main>
+  44:	e8 c0       	rjmp	.+464    	; 0x216 <_exit>
 
 00000046 <__bad_interrupt>:
   46:	dc cf       	rjmp	.-72     	; 0x0 <__vectors>
@@ -96,425 +96,422 @@ void error_init(ports port, uint8_t green_led_pin, uint8_t red_led_pin)
 	// clear the io required
 	IO_write(error_port,error_green_led_pin,SET);		// green light
   54:	41 e0       	ldi	r20, 0x01	; 1
-  56:	25 d0       	rcall	.+74     	; 0xa2 <IO_write>
+  56:	07 d0       	rcall	.+14     	; 0x66 <IO_write>
 	IO_write(error_port,error_red_led_pin,CLEAR);		// red light
   58:	40 e0       	ldi	r20, 0x00	; 0
   5a:	60 91 60 00 	lds	r22, 0x0060
   5e:	80 91 62 00 	lds	r24, 0x0062
-  62:	1f d0       	rcall	.+62     	; 0xa2 <IO_write>
+  62:	01 d0       	rcall	.+2      	; 0x66 <IO_write>
   64:	08 95       	ret
 
-00000066 <error_handler>:
-}
-
-
-void error_handler(uint8_t status)
-{
-  66:	cf 93       	push	r28
-  68:	c8 2f       	mov	r28, r24
-	// clear the io required
-	IO_write(error_port,error_green_led_pin,CLEAR);
-  6a:	40 e0       	ldi	r20, 0x00	; 0
-  6c:	60 91 61 00 	lds	r22, 0x0061
-  70:	80 91 62 00 	lds	r24, 0x0062
-  74:	16 d0       	rcall	.+44     	; 0xa2 <IO_write>
-	IO_write(error_port,error_red_led_pin,CLEAR);
-  76:	40 e0       	ldi	r20, 0x00	; 0
-  78:	60 91 60 00 	lds	r22, 0x0060
-  7c:	80 91 62 00 	lds	r24, 0x0062
-  80:	10 d0       	rcall	.+32     	; 0xa2 <IO_write>
-
-	if(status)
-  82:	cc 23       	and	r28, r28
-  84:	31 f0       	breq	.+12     	; 0x92 <error_handler+0x2c>
-	{
-		// error has been generated stay in this while loop
-		while(1)
-		{
-			IO_flash(error_port,error_red_led_pin);
-  86:	60 91 60 00 	lds	r22, 0x0060
-  8a:	80 91 62 00 	lds	r24, 0x0062
-  8e:	4e d0       	rcall	.+156    	; 0x12c <IO_flash>
+00000066 <IO_write>:
 		}
-  90:	fa cf       	rjmp	.-12     	; 0x86 <error_handler+0x20>
-	}
-	else
-	{
-		// no error generated
-		IO_write(error_port,error_green_led_pin,SET);
-  92:	41 e0       	ldi	r20, 0x01	; 1
-  94:	60 91 61 00 	lds	r22, 0x0061
-  98:	80 91 62 00 	lds	r24, 0x0062
-  9c:	02 d0       	rcall	.+4      	; 0xa2 <IO_write>
-	}
-  9e:	cf 91       	pop	r28
-  a0:	08 95       	ret
-
-000000a2 <IO_write>:
-				state specifies whether we want to set the pin high or low.
-Note:			None
+		case PORT_D:
+		{
+			#ifdef PORTD
+			//set pin as input
+			DDRD &= ~(1 << pinnumber);
+  66:	81 30       	cpi	r24, 0x01	; 1
+  68:	c9 f0       	breq	.+50     	; 0x9c <IO_write+0x36>
+  6a:	18 f0       	brcs	.+6      	; 0x72 <IO_write+0xc>
+			//enable pull up resistor
+			PORTD |= (1 << pinnumber);
+  6c:	82 30       	cpi	r24, 0x02	; 2
+  6e:	59 f1       	breq	.+86     	; 0xc6 <IO_write+0x60>
+  70:	08 95       	ret
+			//read the value required
+			pinvalue = (1 << pinnumber)&(PIND);
+  72:	27 b3       	in	r18, 0x17	; 23
+  74:	81 e0       	ldi	r24, 0x01	; 1
+			#endif					
+			break;
+  76:	90 e0       	ldi	r25, 0x00	; 0
+				pinnumber specifies which pin we want to address (to read)
+Returns:		returns a 1 or 0 depending on the state of the pin read
 *****************************************************************************/
-void IO_write(ports port, uint8_t pinnumber,uint8_t state)
+uint8_t IO_read(ports port, uint8_t pinnumber)
 {
-	switch (port)
-  a2:	81 30       	cpi	r24, 0x01	; 1
-  a4:	c9 f0       	breq	.+50     	; 0xd8 <IO_write+0x36>
-  a6:	18 f0       	brcs	.+6      	; 0xae <IO_write+0xc>
-  a8:	82 30       	cpi	r24, 0x02	; 2
-  aa:	59 f1       	breq	.+86     	; 0x102 <IO_write+0x60>
-  ac:	08 95       	ret
+	uint8_t pinvalue = 0;
+  78:	02 c0       	rjmp	.+4      	; 0x7e <IO_write+0x18>
+			break;
+		}
+	}
+	
+	return pinvalue;
+}
+  7a:	88 0f       	add	r24, r24
 	{
 		case PORT_B:
 		{
 			#ifdef PORTB
 			//set the pinnumber as output
 			DDRB |= (1 << pinnumber);
-  ae:	27 b3       	in	r18, 0x17	; 23
-  b0:	81 e0       	ldi	r24, 0x01	; 1
-  b2:	90 e0       	ldi	r25, 0x00	; 0
-  b4:	02 c0       	rjmp	.+4      	; 0xba <IO_write+0x18>
-  b6:	88 0f       	add	r24, r24
-  b8:	99 1f       	adc	r25, r25
-  ba:	6a 95       	dec	r22
-  bc:	e2 f7       	brpl	.-8      	; 0xb6 <IO_write+0x14>
-  be:	28 2b       	or	r18, r24
-  c0:	27 bb       	out	0x17, r18	; 23
+  7c:	99 1f       	adc	r25, r25
+  7e:	6a 95       	dec	r22
+  80:	e2 f7       	brpl	.-8      	; 0x7a <IO_write+0x14>
+  82:	28 2b       	or	r18, r24
+  84:	27 bb       	out	0x17, r18	; 23
 			if(state)
-  c2:	44 23       	and	r20, r20
-  c4:	21 f0       	breq	.+8      	; 0xce <IO_write+0x2c>
+  86:	44 23       	and	r20, r20
+  88:	21 f0       	breq	.+8      	; 0x92 <IO_write+0x2c>
 			{
 				PORTB |= (1 << pinnumber);
-  c6:	98 b3       	in	r25, 0x18	; 24
-  c8:	89 2b       	or	r24, r25
-  ca:	88 bb       	out	0x18, r24	; 24
-  cc:	08 95       	ret
+  8a:	98 b3       	in	r25, 0x18	; 24
+  8c:	89 2b       	or	r24, r25
+  8e:	88 bb       	out	0x18, r24	; 24
+  90:	08 95       	ret
 			}
 			else
 			{
 				PORTB &= ~(1<< pinnumber);
-  ce:	98 b3       	in	r25, 0x18	; 24
-  d0:	80 95       	com	r24
-  d2:	89 23       	and	r24, r25
-  d4:	88 bb       	out	0x18, r24	; 24
-  d6:	08 95       	ret
+  92:	98 b3       	in	r25, 0x18	; 24
+  94:	80 95       	com	r24
+  96:	89 23       	and	r24, r25
+  98:	88 bb       	out	0x18, r24	; 24
+  9a:	08 95       	ret
 		}
 		case PORT_C:
 		{
 			#ifdef PORTC
 			//set the pinnumber as output
 			DDRC |= (1 << pinnumber);
-  d8:	24 b3       	in	r18, 0x14	; 20
-  da:	81 e0       	ldi	r24, 0x01	; 1
-  dc:	90 e0       	ldi	r25, 0x00	; 0
-  de:	02 c0       	rjmp	.+4      	; 0xe4 <IO_write+0x42>
-  e0:	88 0f       	add	r24, r24
-  e2:	99 1f       	adc	r25, r25
-  e4:	6a 95       	dec	r22
-  e6:	e2 f7       	brpl	.-8      	; 0xe0 <IO_write+0x3e>
-  e8:	28 2b       	or	r18, r24
-  ea:	24 bb       	out	0x14, r18	; 20
+  9c:	24 b3       	in	r18, 0x14	; 20
+  9e:	81 e0       	ldi	r24, 0x01	; 1
+  a0:	90 e0       	ldi	r25, 0x00	; 0
+  a2:	02 c0       	rjmp	.+4      	; 0xa8 <IO_write+0x42>
+  a4:	88 0f       	add	r24, r24
+  a6:	99 1f       	adc	r25, r25
+  a8:	6a 95       	dec	r22
+  aa:	e2 f7       	brpl	.-8      	; 0xa4 <IO_write+0x3e>
+  ac:	28 2b       	or	r18, r24
+  ae:	24 bb       	out	0x14, r18	; 20
 			if(state)
-  ec:	44 23       	and	r20, r20
-  ee:	21 f0       	breq	.+8      	; 0xf8 <IO_write+0x56>
+  b0:	44 23       	and	r20, r20
+  b2:	21 f0       	breq	.+8      	; 0xbc <IO_write+0x56>
 			{
 				PORTC |= (1 << pinnumber);
-  f0:	95 b3       	in	r25, 0x15	; 21
-  f2:	89 2b       	or	r24, r25
-  f4:	85 bb       	out	0x15, r24	; 21
-  f6:	08 95       	ret
+  b4:	95 b3       	in	r25, 0x15	; 21
+  b6:	89 2b       	or	r24, r25
+  b8:	85 bb       	out	0x15, r24	; 21
+  ba:	08 95       	ret
 			}
 			else
 			{
 				PORTC &= ~(1<< pinnumber);
-  f8:	95 b3       	in	r25, 0x15	; 21
-  fa:	80 95       	com	r24
-  fc:	89 23       	and	r24, r25
-  fe:	85 bb       	out	0x15, r24	; 21
- 100:	08 95       	ret
+  bc:	95 b3       	in	r25, 0x15	; 21
+  be:	80 95       	com	r24
+  c0:	89 23       	and	r24, r25
+  c2:	85 bb       	out	0x15, r24	; 21
+  c4:	08 95       	ret
 		}
 		case PORT_D:
 		{
 			#ifdef PORTD
 			//set the pinnumber as output
 			DDRD |= (1 << pinnumber);
- 102:	21 b3       	in	r18, 0x11	; 17
- 104:	81 e0       	ldi	r24, 0x01	; 1
- 106:	90 e0       	ldi	r25, 0x00	; 0
- 108:	02 c0       	rjmp	.+4      	; 0x10e <IO_write+0x6c>
- 10a:	88 0f       	add	r24, r24
- 10c:	99 1f       	adc	r25, r25
- 10e:	6a 95       	dec	r22
- 110:	e2 f7       	brpl	.-8      	; 0x10a <IO_write+0x68>
- 112:	28 2b       	or	r18, r24
- 114:	21 bb       	out	0x11, r18	; 17
+  c6:	21 b3       	in	r18, 0x11	; 17
+  c8:	81 e0       	ldi	r24, 0x01	; 1
+  ca:	90 e0       	ldi	r25, 0x00	; 0
+  cc:	02 c0       	rjmp	.+4      	; 0xd2 <IO_write+0x6c>
+  ce:	88 0f       	add	r24, r24
+  d0:	99 1f       	adc	r25, r25
+  d2:	6a 95       	dec	r22
+  d4:	e2 f7       	brpl	.-8      	; 0xce <IO_write+0x68>
+  d6:	28 2b       	or	r18, r24
+  d8:	21 bb       	out	0x11, r18	; 17
 			if(state)
- 116:	44 23       	and	r20, r20
- 118:	21 f0       	breq	.+8      	; 0x122 <IO_write+0x80>
+  da:	44 23       	and	r20, r20
+  dc:	21 f0       	breq	.+8      	; 0xe6 <IO_write+0x80>
 			{
 				PORTD |= (1 << pinnumber);
- 11a:	92 b3       	in	r25, 0x12	; 18
- 11c:	89 2b       	or	r24, r25
- 11e:	82 bb       	out	0x12, r24	; 18
- 120:	08 95       	ret
+  de:	92 b3       	in	r25, 0x12	; 18
+  e0:	89 2b       	or	r24, r25
+  e2:	82 bb       	out	0x12, r24	; 18
+  e4:	08 95       	ret
 			}
 			else
 			{
 				PORTD &= ~(1<< pinnumber);
- 122:	92 b3       	in	r25, 0x12	; 18
- 124:	80 95       	com	r24
- 126:	89 23       	and	r24, r25
- 128:	82 bb       	out	0x12, r24	; 18
- 12a:	08 95       	ret
+  e6:	92 b3       	in	r25, 0x12	; 18
+  e8:	80 95       	com	r24
+  ea:	89 23       	and	r24, r25
+  ec:	82 bb       	out	0x12, r24	; 18
+  ee:	08 95       	ret
 
-0000012c <IO_flash>:
+000000f0 <IO_flash>:
 Purpose:		Flashes the IO of choosing (only once)
 Parameters:		port this specifies the port required to flash and Pin number
 Returns:		None
 *****************************************************************************/
 void IO_flash(ports port, uint8_t pinnumber)
 {
- 12c:	cf 93       	push	r28
- 12e:	df 93       	push	r29
- 130:	c8 2f       	mov	r28, r24
- 132:	d6 2f       	mov	r29, r22
+  f0:	cf 93       	push	r28
+  f2:	df 93       	push	r29
+  f4:	c8 2f       	mov	r28, r24
+  f6:	d6 2f       	mov	r29, r22
 	IO_write(port, pinnumber, CLEAR);
- 134:	40 e0       	ldi	r20, 0x00	; 0
- 136:	b5 df       	rcall	.-150    	; 0xa2 <IO_write>
+  f8:	40 e0       	ldi	r20, 0x00	; 0
+  fa:	b5 df       	rcall	.-150    	; 0x66 <IO_write>
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
- 138:	2f e7       	ldi	r18, 0x7F	; 127
- 13a:	8a e1       	ldi	r24, 0x1A	; 26
- 13c:	96 e0       	ldi	r25, 0x06	; 6
- 13e:	21 50       	subi	r18, 0x01	; 1
- 140:	80 40       	sbci	r24, 0x00	; 0
- 142:	90 40       	sbci	r25, 0x00	; 0
- 144:	e1 f7       	brne	.-8      	; 0x13e <IO_flash+0x12>
- 146:	00 c0       	rjmp	.+0      	; 0x148 <IO_flash+0x1c>
- 148:	00 00       	nop
+  fc:	2f e7       	ldi	r18, 0x7F	; 127
+  fe:	8a e1       	ldi	r24, 0x1A	; 26
+ 100:	96 e0       	ldi	r25, 0x06	; 6
+ 102:	21 50       	subi	r18, 0x01	; 1
+ 104:	80 40       	sbci	r24, 0x00	; 0
+ 106:	90 40       	sbci	r25, 0x00	; 0
+ 108:	e1 f7       	brne	.-8      	; 0x102 <IO_flash+0x12>
+ 10a:	00 c0       	rjmp	.+0      	; 0x10c <IO_flash+0x1c>
+ 10c:	00 00       	nop
 	_delay_ms(2000);
 	IO_write(port, pinnumber, SET);
- 14a:	41 e0       	ldi	r20, 0x01	; 1
- 14c:	6d 2f       	mov	r22, r29
- 14e:	8c 2f       	mov	r24, r28
- 150:	a8 df       	rcall	.-176    	; 0xa2 <IO_write>
- 152:	2f e7       	ldi	r18, 0x7F	; 127
- 154:	8a e1       	ldi	r24, 0x1A	; 26
- 156:	96 e0       	ldi	r25, 0x06	; 6
- 158:	21 50       	subi	r18, 0x01	; 1
- 15a:	80 40       	sbci	r24, 0x00	; 0
- 15c:	90 40       	sbci	r25, 0x00	; 0
- 15e:	e1 f7       	brne	.-8      	; 0x158 <IO_flash+0x2c>
- 160:	00 c0       	rjmp	.+0      	; 0x162 <IO_flash+0x36>
- 162:	00 00       	nop
+ 10e:	41 e0       	ldi	r20, 0x01	; 1
+ 110:	6d 2f       	mov	r22, r29
+ 112:	8c 2f       	mov	r24, r28
+ 114:	a8 df       	rcall	.-176    	; 0x66 <IO_write>
+ 116:	2f e7       	ldi	r18, 0x7F	; 127
+ 118:	8a e1       	ldi	r24, 0x1A	; 26
+ 11a:	96 e0       	ldi	r25, 0x06	; 6
+ 11c:	21 50       	subi	r18, 0x01	; 1
+ 11e:	80 40       	sbci	r24, 0x00	; 0
+ 120:	90 40       	sbci	r25, 0x00	; 0
+ 122:	e1 f7       	brne	.-8      	; 0x11c <IO_flash+0x2c>
+ 124:	00 c0       	rjmp	.+0      	; 0x126 <IO_flash+0x36>
+ 126:	00 00       	nop
 	_delay_ms(2000);
- 164:	df 91       	pop	r29
- 166:	cf 91       	pop	r28
- 168:	08 95       	ret
+ 128:	df 91       	pop	r29
+ 12a:	cf 91       	pop	r28
+ 12c:	08 95       	ret
 
-0000016a <twi_slave_init>:
+0000012e <twi_slave_init>:
 Returns:		None
 Note:			None
 ****************************************************************************/
 void twi_slave_init(uint8_t slaveaddress)
 {	
 	TWAR = (slaveaddress<<1);
- 16a:	88 0f       	add	r24, r24
- 16c:	82 b9       	out	0x02, r24	; 2
+ 12e:	88 0f       	add	r24, r24
+ 130:	82 b9       	out	0x02, r24	; 2
 																						//Load the slave address
 	TWCR = (1<<TWEN)|														//Enables TWI interface
- 16e:	85 ec       	ldi	r24, 0xC5	; 197
- 170:	86 bf       	out	0x36, r24	; 54
+ 132:	85 ec       	ldi	r24, 0xC5	; 197
+ 134:	86 bf       	out	0x36, r24	; 54
 Returns:		None
 Note:			None
 ****************************************************************************/
 static void flagwait(void)
 {
 	while(!(TWCR &(1<<TWINT)));
- 172:	06 b6       	in	r0, 0x36	; 54
- 174:	07 fe       	sbrs	r0, 7
- 176:	fd cf       	rjmp	.-6      	; 0x172 <twi_slave_init+0x8>
+ 136:	06 b6       	in	r0, 0x36	; 54
+ 138:	07 fe       	sbrs	r0, 7
+ 13a:	fd cf       	rjmp	.-6      	; 0x136 <twi_slave_init+0x8>
 			(1<<TWIE)|(1<<TWINT)|											//Enable interrupt
 			(1<<TWEA)|(0<<TWSTA)|(0<<TWSTO)|								//Enabling the start condition bit 
-			(0<<TWWC);												//Enable twi
-	
-	flagwait();														//Wait till flag is cleared	
+			(0<<TWWC);														//Enable twi
+																			//Wait till flag is cleared	
+	flagwait();
 }
- 178:	08 95       	ret
+ 13c:	08 95       	ret
 
-0000017a <twi_slave_ACK_tx>:
+0000013e <twi_slave_tx_ack>:
 Returns:		None
 Note:			None
 ****************************************************************************/
-void twi_slave_ACK_tx(void)
+void twi_slave_tx_ack(void)
 {	
-	TWCR = (1<<TWEN)|														//Enables TWI interface
- 17a:	85 ec       	ldi	r24, 0xC5	; 197
- 17c:	86 bf       	out	0x36, r24	; 54
- 17e:	08 95       	ret
+	TWCR =	(1<<TWEN)|														//Enables TWI interface
+ 13e:	85 ec       	ldi	r24, 0xC5	; 197
+ 140:	86 bf       	out	0x36, r24	; 54
+ 142:	08 95       	ret
 
-00000180 <twi_slave_NACK_tx>:
+00000144 <twi_slave_tx_nack>:
 Returns:		None
 Note:			None
 ****************************************************************************/
-void twi_slave_NACK_tx(void)
+void twi_slave_tx_nack(void)
 {		
 	TWCR = (1<<TWINT)|(1<<TWEN)|(0<<TWEA)|(1<<TWIE);											
- 180:	85 e8       	ldi	r24, 0x85	; 133
- 182:	86 bf       	out	0x36, r24	; 54
- 184:	08 95       	ret
+ 144:	85 e8       	ldi	r24, 0x85	; 133
+ 146:	86 bf       	out	0x36, r24	; 54
+ 148:	08 95       	ret
 
-00000186 <__vector_17>:
-static uint8_t databuffer[DATABUFFER] = {0};
-static uint8_t i =0;	
+0000014a <twi_clear_twint>:
+Returns:		None
+Note:			None
+****************************************************************************/
+void twi_clear_twint(void)
+{
+	TWCR |=(1<<TWINT);
+ 14a:	86 b7       	in	r24, 0x36	; 54
+ 14c:	80 68       	ori	r24, 0x80	; 128
+ 14e:	86 bf       	out	0x36, r24	; 54
+ 150:	08 95       	ret
+
+00000152 <__vector_17>:
+uint8_t tw_status;
+uint8_t data_rx = 0;
 
 
 ISR(TWI_vect)
 {
- 186:	1f 92       	push	r1
- 188:	0f 92       	push	r0
- 18a:	0f b6       	in	r0, 0x3f	; 63
- 18c:	0f 92       	push	r0
- 18e:	11 24       	eor	r1, r1
- 190:	2f 93       	push	r18
- 192:	3f 93       	push	r19
- 194:	4f 93       	push	r20
- 196:	5f 93       	push	r21
- 198:	6f 93       	push	r22
- 19a:	7f 93       	push	r23
- 19c:	8f 93       	push	r24
- 19e:	9f 93       	push	r25
- 1a0:	af 93       	push	r26
- 1a2:	bf 93       	push	r27
- 1a4:	ef 93       	push	r30
- 1a6:	ff 93       	push	r31
-
-	uint8_t tw_status = TWSR & MASK;
- 1a8:	81 b1       	in	r24, 0x01	; 1
- 1aa:	88 7f       	andi	r24, 0xF8	; 248
+ 152:	1f 92       	push	r1
+ 154:	0f 92       	push	r0
+ 156:	0f b6       	in	r0, 0x3f	; 63
+ 158:	0f 92       	push	r0
+ 15a:	11 24       	eor	r1, r1
+ 15c:	2f 93       	push	r18
+ 15e:	3f 93       	push	r19
+ 160:	4f 93       	push	r20
+ 162:	5f 93       	push	r21
+ 164:	6f 93       	push	r22
+ 166:	7f 93       	push	r23
+ 168:	8f 93       	push	r24
+ 16a:	9f 93       	push	r25
+ 16c:	af 93       	push	r26
+ 16e:	bf 93       	push	r27
+ 170:	ef 93       	push	r30
+ 172:	ff 93       	push	r31
+	cli();
+ 174:	f8 94       	cli
+	tw_status = (TWSR & MASK);
+ 176:	81 b1       	in	r24, 0x01	; 1
+ 178:	88 7f       	andi	r24, 0xF8	; 248
+ 17a:	80 93 67 00 	sts	0x0067, r24
+	
 	switch(tw_status)
- 1ac:	80 36       	cpi	r24, 0x60	; 96
- 1ae:	29 f0       	breq	.+10     	; 0x1ba <__vector_17+0x34>
- 1b0:	80 38       	cpi	r24, 0x80	; 128
- 1b2:	39 f0       	breq	.+14     	; 0x1c2 <__vector_17+0x3c>
- 1b4:	88 35       	cpi	r24, 0x58	; 88
- 1b6:	d1 f4       	brne	.+52     	; 0x1ec <__vector_17+0x66>
- 1b8:	17 c0       	rjmp	.+46     	; 0x1e8 <__vector_17+0x62>
+ 17e:	80 36       	cpi	r24, 0x60	; 96
+ 180:	29 f0       	breq	.+10     	; 0x18c <__vector_17+0x3a>
+ 182:	80 38       	cpi	r24, 0x80	; 128
+ 184:	39 f0       	breq	.+14     	; 0x194 <__vector_17+0x42>
+ 186:	81 11       	cpse	r24, r1
+ 188:	1b c0       	rjmp	.+54     	; 0x1c0 <__vector_17+0x6e>
+ 18a:	17 c0       	rjmp	.+46     	; 0x1ba <__vector_17+0x68>
 	{	
 		case SLAVE_SLA_W_ACK_TX:
 		{
-			TWCR |= (1<<TWINT);
- 1ba:	86 b7       	in	r24, 0x36	; 54
- 1bc:	80 68       	ori	r24, 0x80	; 128
- 1be:	86 bf       	out	0x36, r24	; 54
+			data_rx_count = 0;
+ 18c:	10 92 63 00 	sts	0x0063, r1
+			//twi_slave_tx_ack();
+			twi_clear_twint();
+ 190:	dc df       	rcall	.-72     	; 0x14a <twi_clear_twint>
 			break;
- 1c0:	15 c0       	rjmp	.+42     	; 0x1ec <__vector_17+0x66>
+ 192:	17 c0       	rjmp	.+46     	; 0x1c2 <__vector_17+0x70>
 		}	
-		case SLAVE_DATA_RX:
+		case SLAVE_DATA_RX_ACK_TRANSMITTED:
 		{
-			if(i< DATABUFFER)
- 1c2:	80 91 63 00 	lds	r24, 0x0063
- 1c6:	8a 30       	cpi	r24, 0x0A	; 10
- 1c8:	58 f4       	brcc	.+22     	; 0x1e0 <__vector_17+0x5a>
+			if(data_rx_count < DATA_BUFFER_SIZE)
+ 194:	80 91 63 00 	lds	r24, 0x0063
+ 198:	83 30       	cpi	r24, 0x03	; 3
+ 19a:	58 f4       	brcc	.+22     	; 0x1b2 <__vector_17+0x60>
 			{
-				databuffer[i] = TWDR;
- 1ca:	93 b1       	in	r25, 0x03	; 3
- 1cc:	e8 2f       	mov	r30, r24
- 1ce:	f0 e0       	ldi	r31, 0x00	; 0
- 1d0:	ec 59       	subi	r30, 0x9C	; 156
- 1d2:	ff 4f       	sbci	r31, 0xFF	; 255
- 1d4:	90 83       	st	Z, r25
-				i++;
- 1d6:	8f 5f       	subi	r24, 0xFF	; 255
- 1d8:	80 93 63 00 	sts	0x0063, r24
-				twi_slave_ACK_tx();
- 1dc:	ce df       	rcall	.-100    	; 0x17a <twi_slave_ACK_tx>
- 1de:	06 c0       	rjmp	.+12     	; 0x1ec <__vector_17+0x66>
+				databuffer[data_rx_count] = TWDR;
+ 19c:	93 b1       	in	r25, 0x03	; 3
+ 19e:	e8 2f       	mov	r30, r24
+ 1a0:	f0 e0       	ldi	r31, 0x00	; 0
+ 1a2:	ec 59       	subi	r30, 0x9C	; 156
+ 1a4:	ff 4f       	sbci	r31, 0xFF	; 255
+ 1a6:	90 83       	st	Z, r25
+				data_rx_count++;
+ 1a8:	8f 5f       	subi	r24, 0xFF	; 255
+ 1aa:	80 93 63 00 	sts	0x0063, r24
+				twi_slave_tx_ack();
+ 1ae:	c7 df       	rcall	.-114    	; 0x13e <twi_slave_tx_ack>
+ 1b0:	08 c0       	rjmp	.+16     	; 0x1c2 <__vector_17+0x70>
 			}
 			else
 			{
-				twi_slave_NACK_tx();
- 1e0:	cf df       	rcall	.-98     	; 0x180 <twi_slave_NACK_tx>
-				i =0;
- 1e2:	10 92 63 00 	sts	0x0063, r1
- 1e6:	02 c0       	rjmp	.+4      	; 0x1ec <__vector_17+0x66>
+				data_rx_count = 0;
+ 1b2:	10 92 63 00 	sts	0x0063, r1
+				twi_slave_tx_nack();
+ 1b6:	c6 df       	rcall	.-116    	; 0x144 <twi_slave_tx_nack>
+ 1b8:	04 c0       	rjmp	.+8      	; 0x1c2 <__vector_17+0x70>
+			}
 			break;
 		}
-		
-		case SLAVE_DATA_RX_NACK:
+		case 0x00:
 		{
-			error_handler(SET);
- 1e8:	81 e0       	ldi	r24, 0x01	; 1
- 1ea:	3d df       	rcall	.-390    	; 0x66 <error_handler>
+			twi_slave_init(AUTOPILOT_ADDRESS);	
+ 1ba:	81 e0       	ldi	r24, 0x01	; 1
+ 1bc:	b8 df       	rcall	.-144    	; 0x12e <twi_slave_init>
+			break;
+ 1be:	01 c0       	rjmp	.+2      	; 0x1c2 <__vector_17+0x70>
+		}
 		default:
 		{
+			twi_clear_twint();
+ 1c0:	c4 df       	rcall	.-120    	; 0x14a <twi_clear_twint>
 			break;
 		}
 	}
-}	
- 1ec:	ff 91       	pop	r31
- 1ee:	ef 91       	pop	r30
- 1f0:	bf 91       	pop	r27
- 1f2:	af 91       	pop	r26
- 1f4:	9f 91       	pop	r25
- 1f6:	8f 91       	pop	r24
- 1f8:	7f 91       	pop	r23
- 1fa:	6f 91       	pop	r22
- 1fc:	5f 91       	pop	r21
- 1fe:	4f 91       	pop	r20
- 200:	3f 91       	pop	r19
- 202:	2f 91       	pop	r18
- 204:	0f 90       	pop	r0
- 206:	0f be       	out	0x3f, r0	; 63
- 208:	0f 90       	pop	r0
- 20a:	1f 90       	pop	r1
- 20c:	18 95       	reti
+	sei();
+ 1c2:	78 94       	sei
+}
+ 1c4:	ff 91       	pop	r31
+ 1c6:	ef 91       	pop	r30
+ 1c8:	bf 91       	pop	r27
+ 1ca:	af 91       	pop	r26
+ 1cc:	9f 91       	pop	r25
+ 1ce:	8f 91       	pop	r24
+ 1d0:	7f 91       	pop	r23
+ 1d2:	6f 91       	pop	r22
+ 1d4:	5f 91       	pop	r21
+ 1d6:	4f 91       	pop	r20
+ 1d8:	3f 91       	pop	r19
+ 1da:	2f 91       	pop	r18
+ 1dc:	0f 90       	pop	r0
+ 1de:	0f be       	out	0x3f, r0	; 63
+ 1e0:	0f 90       	pop	r0
+ 1e2:	1f 90       	pop	r1
+ 1e4:	18 95       	reti
 
-0000020e <main>:
+000001e6 <main>:
 
 int main(void)
-{
-	sei();									// enable interrupt
- 20e:	78 94       	sei
+{	
+	sei();
+ 1e6:	78 94       	sei
 	error_init(ERROR_PORT, ERROR_LED_GREEN_PIN, ERROR_LED_RED_PIN);
- 210:	47 e0       	ldi	r20, 0x07	; 7
- 212:	66 e0       	ldi	r22, 0x06	; 6
- 214:	82 e0       	ldi	r24, 0x02	; 2
- 216:	18 df       	rcall	.-464    	; 0x48 <error_init>
+ 1e8:	47 e0       	ldi	r20, 0x07	; 7
+ 1ea:	66 e0       	ldi	r22, 0x06	; 6
+ 1ec:	82 e0       	ldi	r24, 0x02	; 2
+ 1ee:	2c df       	rcall	.-424    	; 0x48 <error_init>
 	twi_slave_init(AUTOPILOT_ADDRESS);
- 218:	81 e0       	ldi	r24, 0x01	; 1
- 21a:	a7 df       	rcall	.-178    	; 0x16a <twi_slave_init>
-	
-    while(1)
-    {
-		if(databuffer[0])
- 21c:	c4 e6       	ldi	r28, 0x64	; 100
- 21e:	d0 e0       	ldi	r29, 0x00	; 0
- 220:	88 81       	ld	r24, Y
- 222:	88 23       	and	r24, r24
- 224:	29 f0       	breq	.+10     	; 0x230 <main+0x22>
+ 1f0:	81 e0       	ldi	r24, 0x01	; 1
+ 1f2:	9d df       	rcall	.-198    	; 0x12e <twi_slave_init>
+
+	while (1)
+	{
+		if((databuffer[0] == 0xFF) && (databuffer[1] == 0x01))
+ 1f4:	c4 e6       	ldi	r28, 0x64	; 100
+ 1f6:	d0 e0       	ldi	r29, 0x00	; 0
+ 1f8:	88 81       	ld	r24, Y
+ 1fa:	8f 3f       	cpi	r24, 0xFF	; 255
+ 1fc:	41 f4       	brne	.+16     	; 0x20e <main+0x28>
+ 1fe:	89 81       	ldd	r24, Y+1	; 0x01
+ 200:	81 30       	cpi	r24, 0x01	; 1
+ 202:	29 f4       	brne	.+10     	; 0x20e <main+0x28>
 		{
-			IO_write(PORT_D, 5, SET);
- 226:	41 e0       	ldi	r20, 0x01	; 1
- 228:	65 e0       	ldi	r22, 0x05	; 5
- 22a:	82 e0       	ldi	r24, 0x02	; 2
- 22c:	3a df       	rcall	.-396    	; 0xa2 <IO_write>
- 22e:	f8 cf       	rjmp	.-16     	; 0x220 <main+0x12>
+			IO_write(ERROR_PORT,ERROR_LED_GREEN_PIN,SET);
+ 204:	41 e0       	ldi	r20, 0x01	; 1
+ 206:	66 e0       	ldi	r22, 0x06	; 6
+ 208:	82 e0       	ldi	r24, 0x02	; 2
+ 20a:	2d df       	rcall	.-422    	; 0x66 <IO_write>
+ 20c:	f5 cf       	rjmp	.-22     	; 0x1f8 <main+0x12>
 		}
 		else
 		{
-			IO_write(PORT_D, 5, CLEAR);	
- 230:	40 e0       	ldi	r20, 0x00	; 0
- 232:	65 e0       	ldi	r22, 0x05	; 5
- 234:	82 e0       	ldi	r24, 0x02	; 2
- 236:	35 df       	rcall	.-406    	; 0xa2 <IO_write>
- 238:	f3 cf       	rjmp	.-26     	; 0x220 <main+0x12>
+			IO_flash(ERROR_PORT,ERROR_LED_GREEN_PIN);
+ 20e:	66 e0       	ldi	r22, 0x06	; 6
+ 210:	82 e0       	ldi	r24, 0x02	; 2
+ 212:	6e df       	rcall	.-292    	; 0xf0 <IO_flash>
+ 214:	f1 cf       	rjmp	.-30     	; 0x1f8 <main+0x12>
 
-0000023a <_exit>:
- 23a:	f8 94       	cli
+00000216 <_exit>:
+ 216:	f8 94       	cli
 
-0000023c <__stop_program>:
- 23c:	ff cf       	rjmp	.-2      	; 0x23c <__stop_program>
+00000218 <__stop_program>:
+ 218:	ff cf       	rjmp	.-2      	; 0x218 <__stop_program>

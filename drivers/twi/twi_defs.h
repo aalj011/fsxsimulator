@@ -46,14 +46,12 @@
 #define SLAVE_SLA_W_ACK_TX						0x60
 #define SLAVE_SLA_W_NACK_TX						0x20
 
-#define SLAVE_DATA_RX							0x80
-#define SLAVE_DATA_TX_NACK						0x30
+#define SLAVE_DATA_RX_ACK_TRANSMITTED			0x80
+#define SLAVE_DATA_RX_NACK_TRANSMITTED			0x88
 
 #define SLAVE_SLA_R_ACK							0x40
 #define SLAVE_SLA_R_NACK						0x48
 
-#define SLAVE_DATA_RX_ACK						0x50
-#define SLAVE_DATA_RX_NACK						0x58
 #define SLAVE_COMS_LOST							0x68
 //***********************************
 
