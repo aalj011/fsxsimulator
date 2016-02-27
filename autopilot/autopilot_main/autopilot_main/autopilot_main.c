@@ -17,10 +17,11 @@
 #include "error.h"
 #include "common_defs.h"
 
-static uint8_t msg_rx[DATA_BUFFER_SIZE] = {0};
-static uint8_t datarx_count =0;	
 uint8_t tw_status;
+uint8_t msg_count;
+sMessagePacket messagePacketHeader;
 
+static uint8_t recieve_message(void);
 
 ISR(TWI_vect)
 {
@@ -31,21 +32,18 @@ ISR(TWI_vect)
 	{	
 		case SLAVE_SLA_W_ACK_TX:
 		{
-			datarx_count = 0;
-			twi_clear_twint();
+			msg_count = 0;
+			twi_slave_tx_ack();
 			break;
 		}	
 		case SLAVE_DATA_RX_ACK_TX:
 		{
-			if(datarx_count < DATA_BUFFER_SIZE)
+			if(recieve_message())
 			{
-				msg_rx[datarx_count] = TWDR;
-				datarx_count++;
 				twi_slave_tx_ack();
 			}
 			else
 			{
-				datarx_count = 0;
 				twi_slave_tx_nack();
 			}
 			break;
@@ -64,6 +62,30 @@ ISR(TWI_vect)
 	sei();
 }
 
+static uint8_t recieve_message(void)
+{
+	uint8_t status = 0;
+	if(msg_count < MSG_SIZE)
+	{
+		if(msg_count == 0)
+		{
+			messagePacketHeader.command = (eCommands)TWDR;
+		}
+		else
+		{
+			messagePacketHeader.data[msg_count] = (uint8_t)TWDR;
+		}
+		msg_count++;
+		status = 1;
+	}
+	else
+	{
+		msg_count = 0;
+		status = 0;
+	}
+	return status;
+}
+
 int main(void)
 {	
 	sei();
@@ -72,7 +94,7 @@ int main(void)
 
 	while (1)
 	{
-		if((msg_rx[0] == 0xFF) && (msg_rx[1] == 0x01))
+		if((messagePacketHeader.data[0] == 0x01) && (messagePacketHeader.data[1] == 0x01))
 		{
 			IO_write(ERROR_PORT,ERROR_LED_GREEN_PIN,SET);
 		}

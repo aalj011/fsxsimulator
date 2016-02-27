@@ -107,7 +107,7 @@ Parameters:		uint8_t data to be written.
 Returns:		None
 Note:			None
 ****************************************************************************/
-void twi_master_send_data(uint8_t data)
+void twi_send_data(uint8_t data)
 {	
 	TWDR = data;
 	TWCR =	(1<<TWEN)|														//Enables TWI interface
