@@ -15,10 +15,6 @@
 #define ERROR_LED_GREEN_PIN 6
 #define ERROR_LED_RED_PIN 7
 
-#define DATA_BUFFER_SIZE	3
-
-
-
 
 
 #endif /* PLATEFORM_H_ */

@@ -17,10 +17,9 @@
 #include "error.h"
 #include "common_defs.h"
 
-static uint8_t databuffer[DATA_BUFFER_SIZE] = {0};
-static uint8_t data_rx_count =0;	
+static uint8_t msg_rx[DATA_BUFFER_SIZE] = {0};
+static uint8_t datarx_count =0;	
 uint8_t tw_status;
-uint8_t data_rx = 0;
 
 
 ISR(TWI_vect)
@@ -32,27 +31,26 @@ ISR(TWI_vect)
 	{	
 		case SLAVE_SLA_W_ACK_TX:
 		{
-			data_rx_count = 0;
-			//twi_slave_tx_ack();
+			datarx_count = 0;
 			twi_clear_twint();
 			break;
 		}	
-		case SLAVE_DATA_RX_ACK_TRANSMITTED:
+		case SLAVE_DATA_RX_ACK_TX:
 		{
-			if(data_rx_count < DATA_BUFFER_SIZE)
+			if(datarx_count < DATA_BUFFER_SIZE)
 			{
-				databuffer[data_rx_count] = TWDR;
-				data_rx_count++;
+				msg_rx[datarx_count] = TWDR;
+				datarx_count++;
 				twi_slave_tx_ack();
 			}
 			else
 			{
-				data_rx_count = 0;
+				datarx_count = 0;
 				twi_slave_tx_nack();
 			}
 			break;
 		}
-		case 0x00:
+		case SLAVE_BUS_ERROR:
 		{
 			twi_slave_init(AUTOPILOT_ADDRESS);	
 			break;
@@ -74,7 +72,7 @@ int main(void)
 
 	while (1)
 	{
-		if((databuffer[0] == 0xFF) && (databuffer[1] == 0x01))
+		if((msg_rx[0] == 0xFF) && (msg_rx[1] == 0x01))
 		{
 			IO_write(ERROR_PORT,ERROR_LED_GREEN_PIN,SET);
 		}

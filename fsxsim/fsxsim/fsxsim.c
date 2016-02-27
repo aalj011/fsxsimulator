@@ -12,14 +12,8 @@
 #include "twi_defs.h"
 #include "error.h"
 
-static uint8_t data[MSG_BUFFER_SIZE] = {0x00,0x00};
 static uint8_t msg_count = 0;
 uint8_t tw_status;
-uint8_t data_temp = 0x00;
-
-uint8_t target_address = 0;
-uint8_t target_control = 0;
-uint8_t target_message[MSG_BUFFER_SIZE] = {0};
 
 ISR(TWI_vect)
 {
@@ -29,39 +23,39 @@ ISR(TWI_vect)
 	switch(tw_status)
 	{
 		//Successfully transmitted start condition
-		case MASTER_START_TRANSMITTED:
+		case MASTER_START_TX:
 		{
-			twi_master_sla_send_address(target_address, target_control);					// broadcast slave address
+			twi_master_sla_send_address(sMessagePacket.address, sMessagePacket.control);					// broadcast slave address
 			break;
 		}
-		case MASTER_REPEAT_TRANSMITTED:
-		{
-			error_handler(SET);
-			break;
-		}
-		case MASTER_SLA_R_ACK_RECIEVED:
+		case MASTER_REPEAT_TX:
 		{
 			error_handler(SET);
 			break;
 		}
-		case MASTER_SLA_R_NACK_RECIEVED:
+		case MASTER_SLA_R_ACK_RX:
+		{
+			error_handler(SET);
+			break;
+		}
+		case MASTER_SLA_R_NACK_RX:
 		{
 			error_handler(SET);											// error occurred
 			break;
 		}
-		case MASTER_SLA_W_ACK_RECIEVED:
+		case MASTER_SLA_W_ACK_RX:
 		{
 			msg_count = 0;
 			//Start bit 0xFF
 			twi_master_send_data(START_BIT);
 			break;
 		}
-		case MASTER_SLA_W_NACK_RECIEVED:
+		case MASTER_SLA_W_NACK_RX:
 		{
 			error_handler(SET);											// error occurred
 			break;
 		}
-		case MASTER_DATA_TX_ACK_RECIEVED:
+		case MASTER_DATA_TX_ACK_RX:
 		{
 			//Send the message
 			if(msg_count < MSG_BUFFER_SIZE)
@@ -71,18 +65,18 @@ ISR(TWI_vect)
 			}
 			else
 			{
-				msg_count =0;
+					msg_count =0;
 				twi_master_stop_condition();
 			}			
 			break;
 		}
-		case MASTER_DATA_TX_NACK_RECIEVED:
+		case MASTER_DATA_TX_NACK_RX:
 		{
 			twi_master_stop_condition();
 			error_handler(SET);	
 			break;
 		}
-		case MASTER_DATA_RX_NACK_TRANSMITTED:
+		case MASTER_DATA_RX_NACK_TX:
 		{
 			error_handler(SET);													// error occurred	
 			break;
@@ -104,10 +98,12 @@ int main(void)
 	twi_master_start_condition();
 	
 	//Send message to Autopilot
-	target_address = AUTOPILOT_ADDRESS;
-	target_control = TWI_WRITE;
-	target_message[0] = 0x01;
-	target_message[1] = 0x01;
+	sMessagePacket.address = AUTOPILOT_ADDRESS;
+	sMessagePacket.control = TWI_WRITE; 
+	sMessagePacket.start_bit = START_BIT;
+	sMessagePacket.message.command = SET_HEADING;
+	sMessagePacket.message.data[0] = 0x01;
+	sMessagePacket.message.data[1] = 0x01;
 	
 	while (1) 
 	{

@@ -24,37 +24,36 @@
 			
 
 //Master defines 
-//***********************************
-#define MASTER_SLA_W_ACK_RECIEVED				0x18
-#define MASTER_SLA_W_NACK_RECIEVED				0x20
+//**************************************************
+#define MASTER_SLA_W_ACK_RX						0x18
+#define MASTER_SLA_W_NACK_RX					0x20
 
-#define MASTER_SLA_R_ACK_RECIEVED				0x40
-#define MASTER_SLA_R_NACK_RECIEVED				0x48
+#define MASTER_SLA_R_ACK_RX						0x40
+#define MASTER_SLA_R_NACK_RX					0x48
 
-#define MASTER_START_TRANSMITTED				0x08
-#define MASTER_REPEAT_TRANSMITTED				0x10
+#define MASTER_START_TX							0x08
+#define MASTER_REPEAT_TX						0x10
 
-#define MASTER_DATA_TX_ACK_RECIEVED				0x28
-#define MASTER_DATA_TX_NACK_RECIEVED			0x30
+#define MASTER_DATA_TX_ACK_RX					0x28
+#define MASTER_DATA_TX_NACK_RX					0x30
 
-#define MASTER_DATA_RX_ACK_TRANSMITTED			0x50
-#define MASTER_DATA_RX_NACK_TRANSMITTED			0x58
-//***********************************
+#define MASTER_DATA_RX_ACK_TX					0x50
+#define MASTER_DATA_RX_NACK_TX					0x58
+//**************************************************
 
 //Slave defines 
-//***********************************
+//**************************************************
 #define SLAVE_SLA_W_ACK_TX						0x60
 #define SLAVE_SLA_W_NACK_TX						0x20
 
-#define SLAVE_DATA_RX_ACK_TRANSMITTED			0x80
-#define SLAVE_DATA_RX_NACK_TRANSMITTED			0x88
+#define SLAVE_DATA_RX_ACK_TX					0x80
+#define SLAVE_DATA_RX_NACK_TX					0x88
 
 #define SLAVE_SLA_R_ACK							0x40
 #define SLAVE_SLA_R_NACK						0x48
 
 #define SLAVE_COMS_LOST							0x68
-//***********************************
-
-
+#define SLAVE_BUS_ERROR							0x00
+//**************************************************
 
 #endif /* TWI_DEFS_H_ */
