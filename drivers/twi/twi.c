@@ -44,7 +44,8 @@ void twi_master_start_condition(void)
 	TWCR =	(1<<TWEN)|														//Enables TWI interface
 			(1<<TWIE)|(1<<TWINT)|											//Enable interrupt
 			(0<<TWEA)|(1<<TWSTA)|(0<<TWSTO)|								//Enabling the start condition bit 
-			(0<<TWWC);														//write collision flag to zero	
+			(0<<TWWC);
+	//flagwait();														//write collision flag to zero	
 }
 
 
@@ -110,7 +111,8 @@ Note:			None
 void twi_send_data(uint8_t data)
 {	
 	TWDR = data;
-	TWCR =	(1<<TWEN)|														//Enables TWI interface
+	
+	TWCR =	(1<<TWEN)|															//Enables TWI interface
 			(1<<TWIE)|(1<<TWINT)|												//Enable interrupt
 			(0<<TWEA)|(0<<TWSTA)|(0<<TWSTO)|									//Enabling the start condition bit 
 			(0<<TWWC);															//Data to transmit
@@ -198,12 +200,7 @@ uint8_t twi_read_data(void)
 {
 	uint8_t rxdata = 0;
 	rxdata = TWDR;
-	twi_clear_twint();
-	/*
-	TWCR =	(1<<TWEN)|														//Enables TWI interface
-			(1<<TWIE)|(1<<TWINT)|											//Enable interrupt
-			(1<<TWEA)|(0<<TWSTA)|(0<<TWSTO);								//Enable ACK bit
-	*/
+		
 	return rxdata;
 }
 /*****************************************************************************
@@ -215,7 +212,7 @@ Note:			None
 ****************************************************************************/
 void twi_clear_twint(void)
 {
-	TWCR |=(1<<TWINT);
+	TWCR |=	(1<<TWINT);
 }
 /*****************************************************************************
 Name:			flagwait

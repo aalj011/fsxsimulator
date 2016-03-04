@@ -3,31 +3,31 @@ autopilot_main.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00000226  00000000  00000000  00000074  2**1
+  0 .text         00000266  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000000  00800060  00800060  0000029a  2**0
+  1 .data         00000000  00800060  00800060  000002da  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          0000000b  00800060  00800060  0000029a  2**0
+  2 .bss          0000000c  00800060  00800060  000002da  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  0000029a  2**0
+  3 .comment      00000030  00000000  00000000  000002da  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000002cc  2**2
+  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  0000030c  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000108  00000000  00000000  00000308  2**0
+  5 .debug_aranges 00000108  00000000  00000000  00000348  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   0000099d  00000000  00000000  00000410  2**0
+  6 .debug_info   000009b2  00000000  00000000  00000450  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 000004b0  00000000  00000000  00000dad  2**0
+  7 .debug_abbrev 000004c7  00000000  00000000  00000e02  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00000562  00000000  00000000  0000125d  2**0
+  8 .debug_line   0000056e  00000000  00000000  000012c9  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000204  00000000  00000000  000017c0  2**2
+  9 .debug_frame  00000200  00000000  00000000  00001838  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00000475  00000000  00000000  000019c4  2**0
+ 10 .debug_str    00000474  00000000  00000000  00001a38  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    0000045c  00000000  00000000  00001e39  2**0
+ 11 .debug_loc    00000460  00000000  00000000  00001eac  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 000000e0  00000000  00000000  00002295  2**0
+ 12 .debug_ranges 000000e0  00000000  00000000  0000230c  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -50,7 +50,7 @@ Disassembly of section .text:
   1c:	14 c0       	rjmp	.+40     	; 0x46 <__bad_interrupt>
   1e:	13 c0       	rjmp	.+38     	; 0x46 <__bad_interrupt>
   20:	12 c0       	rjmp	.+36     	; 0x46 <__bad_interrupt>
-  22:	97 c0       	rjmp	.+302    	; 0x152 <__vector_17>
+  22:	99 c0       	rjmp	.+306    	; 0x156 <__vector_17>
   24:	10 c0       	rjmp	.+32     	; 0x46 <__bad_interrupt>
 
 00000026 <__ctors_end>:
@@ -71,11 +71,11 @@ Disassembly of section .text:
   3a:	1d 92       	st	X+, r1
 
 0000003c <.do_clear_bss_start>:
-  3c:	ab 36       	cpi	r26, 0x6B	; 107
+  3c:	ac 36       	cpi	r26, 0x6C	; 108
   3e:	b2 07       	cpc	r27, r18
   40:	e1 f7       	brne	.-8      	; 0x3a <.do_clear_bss_loop>
-  42:	d7 d0       	rcall	.+430    	; 0x1f2 <main>
-  44:	ee c0       	rjmp	.+476    	; 0x222 <_exit>
+  42:	f4 d0       	rcall	.+488    	; 0x22c <main>
+  44:	0e c1       	rjmp	.+540    	; 0x262 <_exit>
 
 00000046 <__bad_interrupt>:
   46:	dc cf       	rjmp	.-72     	; 0x0 <__vectors>
@@ -339,206 +339,253 @@ void twi_slave_tx_nack(void)
  146:	86 bf       	out	0x36, r24	; 54
  148:	08 95       	ret
 
-0000014a <twi_clear_twint>:
+0000014a <twi_read_data>:
+Note:			None
+****************************************************************************/
+uint8_t twi_read_data(void)
+{
+	uint8_t rxdata = 0;
+	rxdata = TWDR;
+ 14a:	83 b1       	in	r24, 0x03	; 3
+		
+	return rxdata;
+}
+ 14c:	08 95       	ret
+
+0000014e <twi_clear_twint>:
 Returns:		None
 Note:			None
 ****************************************************************************/
 void twi_clear_twint(void)
 {
-	TWCR |=(1<<TWINT);
- 14a:	86 b7       	in	r24, 0x36	; 54
- 14c:	80 68       	ori	r24, 0x80	; 128
- 14e:	86 bf       	out	0x36, r24	; 54
- 150:	08 95       	ret
+	TWCR |=	(1<<TWINT);
+ 14e:	86 b7       	in	r24, 0x36	; 54
+ 150:	80 68       	ori	r24, 0x80	; 128
+ 152:	86 bf       	out	0x36, r24	; 54
+ 154:	08 95       	ret
 
-00000152 <__vector_17>:
-sMessagePacket messagePacketHeader;
+00000156 <__vector_17>:
 
 static uint8_t recieve_message(void);
 
+
 ISR(TWI_vect)
 {
- 152:	1f 92       	push	r1
- 154:	0f 92       	push	r0
- 156:	0f b6       	in	r0, 0x3f	; 63
+ 156:	1f 92       	push	r1
  158:	0f 92       	push	r0
- 15a:	11 24       	eor	r1, r1
- 15c:	2f 93       	push	r18
- 15e:	3f 93       	push	r19
- 160:	4f 93       	push	r20
- 162:	5f 93       	push	r21
- 164:	6f 93       	push	r22
- 166:	7f 93       	push	r23
- 168:	8f 93       	push	r24
- 16a:	9f 93       	push	r25
- 16c:	af 93       	push	r26
- 16e:	bf 93       	push	r27
- 170:	ef 93       	push	r30
- 172:	ff 93       	push	r31
+ 15a:	0f b6       	in	r0, 0x3f	; 63
+ 15c:	0f 92       	push	r0
+ 15e:	11 24       	eor	r1, r1
+ 160:	2f 93       	push	r18
+ 162:	3f 93       	push	r19
+ 164:	4f 93       	push	r20
+ 166:	5f 93       	push	r21
+ 168:	6f 93       	push	r22
+ 16a:	7f 93       	push	r23
+ 16c:	8f 93       	push	r24
+ 16e:	9f 93       	push	r25
+ 170:	af 93       	push	r26
+ 172:	bf 93       	push	r27
+ 174:	cf 93       	push	r28
+ 176:	ef 93       	push	r30
+ 178:	ff 93       	push	r31
 	cli();
- 174:	f8 94       	cli
+ 17a:	f8 94       	cli
 	tw_status = (TWSR & MASK);
- 176:	81 b1       	in	r24, 0x01	; 1
- 178:	88 7f       	andi	r24, 0xF8	; 248
- 17a:	80 93 63 00 	sts	0x0063, r24
+ 17c:	81 b1       	in	r24, 0x01	; 1
+ 17e:	88 7f       	andi	r24, 0xF8	; 248
+ 180:	80 93 6a 00 	sts	0x006A, r24
 	
 	switch(tw_status)
- 17e:	80 36       	cpi	r24, 0x60	; 96
- 180:	29 f0       	breq	.+10     	; 0x18c <__vector_17+0x3a>
- 182:	80 38       	cpi	r24, 0x80	; 128
- 184:	39 f0       	breq	.+14     	; 0x194 <__vector_17+0x42>
- 186:	81 11       	cpse	r24, r1
- 188:	21 c0       	rjmp	.+66     	; 0x1cc <__vector_17+0x7a>
- 18a:	1d c0       	rjmp	.+58     	; 0x1c6 <__vector_17+0x74>
+ 184:	80 36       	cpi	r24, 0x60	; 96
+ 186:	29 f0       	breq	.+10     	; 0x192 <__vector_17+0x3c>
+ 188:	80 38       	cpi	r24, 0x80	; 128
+ 18a:	71 f0       	breq	.+28     	; 0x1a8 <__vector_17+0x52>
+ 18c:	81 11       	cpse	r24, r1
+ 18e:	32 c0       	rjmp	.+100    	; 0x1f4 <__vector_17+0x9e>
+ 190:	2e c0       	rjmp	.+92     	; 0x1ee <__vector_17+0x98>
 	{	
 		case SLAVE_SLA_W_ACK_TX:
 		{
+			//Initilise the message receive packet
 			msg_count = 0;
- 18c:	10 92 64 00 	sts	0x0064, r1
-			twi_slave_tx_ack();
- 190:	d6 df       	rcall	.-84     	; 0x13e <twi_slave_tx_ack>
+ 192:	10 92 6b 00 	sts	0x006B, r1
+			syncByteFound = 0;
+ 196:	10 92 69 00 	sts	0x0069, r1
+			messagePacketHeader.data[0] = 0x00;
+ 19a:	e3 e6       	ldi	r30, 0x63	; 99
+ 19c:	f0 e0       	ldi	r31, 0x00	; 0
+ 19e:	13 82       	std	Z+3, r1	; 0x03
+			messagePacketHeader.data[1] = 0x00;
+ 1a0:	14 82       	std	Z+4, r1	; 0x04
+			messagePacketHeader.data[2] = 0x00;
+ 1a2:	15 82       	std	Z+5, r1	; 0x05
+			twi_clear_twint();
+ 1a4:	d4 df       	rcall	.-88     	; 0x14e <twi_clear_twint>
 			break;
- 192:	1d c0       	rjmp	.+58     	; 0x1ce <__vector_17+0x7c>
-}
-
+ 1a6:	27 c0       	rjmp	.+78     	; 0x1f6 <__vector_17+0xa0>
 static uint8_t recieve_message(void)
 {
 	uint8_t status = 0;
-	if(msg_count < MSG_SIZE)
- 194:	80 91 64 00 	lds	r24, 0x0064
- 198:	82 30       	cpi	r24, 0x02	; 2
- 19a:	88 f4       	brcc	.+34     	; 0x1be <__vector_17+0x6c>
+	
+	//Check to see if the first rx data is the sync bit
+	if((twi_read_data() == SYNCBIT) && (msg_count == 0) && (!syncByteFound))
+ 1a8:	d0 df       	rcall	.-96     	; 0x14a <twi_read_data>
+ 1aa:	86 3b       	cpi	r24, 0xB6	; 182
+ 1ac:	61 f4       	brne	.+24     	; 0x1c6 <__vector_17+0x70>
+ 1ae:	80 91 6b 00 	lds	r24, 0x006B
+ 1b2:	81 11       	cpse	r24, r1
+ 1b4:	08 c0       	rjmp	.+16     	; 0x1c6 <__vector_17+0x70>
+ 1b6:	80 91 69 00 	lds	r24, 0x0069
+ 1ba:	81 11       	cpse	r24, r1
+ 1bc:	22 c0       	rjmp	.+68     	; 0x202 <__vector_17+0xac>
 	{
-		if(msg_count == 0)
- 19c:	81 11       	cpse	r24, r1
- 19e:	04 c0       	rjmp	.+8      	; 0x1a8 <__vector_17+0x56>
-		{
-			messagePacketHeader.command = (eCommands)TWDR;
- 1a0:	93 b1       	in	r25, 0x03	; 3
- 1a2:	90 93 68 00 	sts	0x0068, r25
- 1a6:	06 c0       	rjmp	.+12     	; 0x1b4 <__vector_17+0x62>
-		}
-		else
-		{
-			messagePacketHeader.data[msg_count] = (uint8_t)TWDR;
- 1a8:	93 b1       	in	r25, 0x03	; 3
- 1aa:	e8 2f       	mov	r30, r24
- 1ac:	f0 e0       	ldi	r31, 0x00	; 0
- 1ae:	eb 59       	subi	r30, 0x9B	; 155
- 1b0:	ff 4f       	sbci	r31, 0xFF	; 255
- 1b2:	94 83       	std	Z+4, r25	; 0x04
-		}
-		msg_count++;
- 1b4:	8f 5f       	subi	r24, 0xFF	; 255
- 1b6:	80 93 64 00 	sts	0x0064, r24
-		}	
-		case SLAVE_DATA_RX_ACK_TX:
-		{
-			if(recieve_message())
-			{
-				twi_slave_tx_ack();
- 1ba:	c1 df       	rcall	.-126    	; 0x13e <twi_slave_tx_ack>
- 1bc:	08 c0       	rjmp	.+16     	; 0x1ce <__vector_17+0x7c>
-		msg_count++;
+		syncByteFound = 1;
+ 1be:	81 e0       	ldi	r24, 0x01	; 1
+ 1c0:	80 93 69 00 	sts	0x0069, r24
+ 1c4:	1a c0       	rjmp	.+52     	; 0x1fa <__vector_17+0xa4>
 		status = 1;
 	}
-	else
+	//sync bit found ready to rx data
+	else if(syncByteFound)
+ 1c6:	80 91 69 00 	lds	r24, 0x0069
+ 1ca:	88 23       	and	r24, r24
+ 1cc:	c1 f0       	breq	.+48     	; 0x1fe <__vector_17+0xa8>
 	{
-		msg_count = 0;
- 1be:	10 92 64 00 	sts	0x0064, r1
-			{
-				twi_slave_tx_ack();
-			}
-			else
-			{
-				twi_slave_tx_nack();
- 1c2:	c0 df       	rcall	.-128    	; 0x144 <twi_slave_tx_nack>
- 1c4:	04 c0       	rjmp	.+8      	; 0x1ce <__vector_17+0x7c>
+		if(msg_count < MSG_SIZE)
+ 1ce:	c0 91 6b 00 	lds	r28, 0x006B
+ 1d2:	c3 30       	cpi	r28, 0x03	; 3
+ 1d4:	a0 f4       	brcc	.+40     	; 0x1fe <__vector_17+0xa8>
+		{
+			messagePacketHeader.data[msg_count] = twi_read_data();
+ 1d6:	b9 df       	rcall	.-142    	; 0x14a <twi_read_data>
+ 1d8:	ec 2f       	mov	r30, r28
+ 1da:	f0 e0       	ldi	r31, 0x00	; 0
+ 1dc:	ed 59       	subi	r30, 0x9D	; 157
+ 1de:	ff 4f       	sbci	r31, 0xFF	; 255
+ 1e0:	83 83       	std	Z+3, r24	; 0x03
+			msg_count++;
+ 1e2:	80 91 6b 00 	lds	r24, 0x006B
+ 1e6:	8f 5f       	subi	r24, 0xFF	; 255
+ 1e8:	80 93 6b 00 	sts	0x006B, r24
+ 1ec:	06 c0       	rjmp	.+12     	; 0x1fa <__vector_17+0xa4>
 			}
 			break;
 		}
 		case SLAVE_BUS_ERROR:
 		{
 			twi_slave_init(AUTOPILOT_ADDRESS);	
- 1c6:	81 e0       	ldi	r24, 0x01	; 1
- 1c8:	b2 df       	rcall	.-156    	; 0x12e <twi_slave_init>
+ 1ee:	81 e0       	ldi	r24, 0x01	; 1
+ 1f0:	9e df       	rcall	.-196    	; 0x12e <twi_slave_init>
 			break;
- 1ca:	01 c0       	rjmp	.+2      	; 0x1ce <__vector_17+0x7c>
+ 1f2:	01 c0       	rjmp	.+2      	; 0x1f6 <__vector_17+0xa0>
 		}
 		default:
 		{
 			twi_clear_twint();
- 1cc:	be df       	rcall	.-132    	; 0x14a <twi_clear_twint>
+ 1f4:	ac df       	rcall	.-168    	; 0x14e <twi_clear_twint>
 			break;
 		}
 	}
 	sei();
- 1ce:	78 94       	sei
+ 1f6:	78 94       	sei
+ 1f8:	07 c0       	rjmp	.+14     	; 0x208 <__vector_17+0xb2>
+		}	
+		case SLAVE_DATA_RX_ACK_TX:
+		{
+			if(recieve_message())
+			{
+				twi_slave_tx_ack();
+ 1fa:	a1 df       	rcall	.-190    	; 0x13e <twi_slave_tx_ack>
+ 1fc:	fc cf       	rjmp	.-8      	; 0x1f6 <__vector_17+0xa0>
+			}
+			else
+			{
+				twi_slave_tx_nack();
+ 1fe:	a2 df       	rcall	.-188    	; 0x144 <twi_slave_tx_nack>
+ 200:	fa cf       	rjmp	.-12     	; 0x1f6 <__vector_17+0xa0>
+		status = 1;
+	}
+	//sync bit found ready to rx data
+	else if(syncByteFound)
+	{
+		if(msg_count < MSG_SIZE)
+ 202:	c0 91 6b 00 	lds	r28, 0x006B
+ 206:	e7 cf       	rjmp	.-50     	; 0x1d6 <__vector_17+0x80>
+			twi_clear_twint();
+			break;
+		}
+	}
+	sei();
 }
- 1d0:	ff 91       	pop	r31
- 1d2:	ef 91       	pop	r30
- 1d4:	bf 91       	pop	r27
- 1d6:	af 91       	pop	r26
- 1d8:	9f 91       	pop	r25
- 1da:	8f 91       	pop	r24
- 1dc:	7f 91       	pop	r23
- 1de:	6f 91       	pop	r22
- 1e0:	5f 91       	pop	r21
- 1e2:	4f 91       	pop	r20
- 1e4:	3f 91       	pop	r19
- 1e6:	2f 91       	pop	r18
- 1e8:	0f 90       	pop	r0
- 1ea:	0f be       	out	0x3f, r0	; 63
- 1ec:	0f 90       	pop	r0
- 1ee:	1f 90       	pop	r1
- 1f0:	18 95       	reti
+ 208:	ff 91       	pop	r31
+ 20a:	ef 91       	pop	r30
+ 20c:	cf 91       	pop	r28
+ 20e:	bf 91       	pop	r27
+ 210:	af 91       	pop	r26
+ 212:	9f 91       	pop	r25
+ 214:	8f 91       	pop	r24
+ 216:	7f 91       	pop	r23
+ 218:	6f 91       	pop	r22
+ 21a:	5f 91       	pop	r21
+ 21c:	4f 91       	pop	r20
+ 21e:	3f 91       	pop	r19
+ 220:	2f 91       	pop	r18
+ 222:	0f 90       	pop	r0
+ 224:	0f be       	out	0x3f, r0	; 63
+ 226:	0f 90       	pop	r0
+ 228:	1f 90       	pop	r1
+ 22a:	18 95       	reti
 
-000001f2 <main>:
+0000022c <main>:
 	return status;
 }
 
 int main(void)
 {	
 	sei();
- 1f2:	78 94       	sei
+ 22c:	78 94       	sei
 	error_init(ERROR_PORT, ERROR_LED_GREEN_PIN, ERROR_LED_RED_PIN);
- 1f4:	47 e0       	ldi	r20, 0x07	; 7
- 1f6:	66 e0       	ldi	r22, 0x06	; 6
- 1f8:	82 e0       	ldi	r24, 0x02	; 2
- 1fa:	26 df       	rcall	.-436    	; 0x48 <error_init>
+ 22e:	47 e0       	ldi	r20, 0x07	; 7
+ 230:	66 e0       	ldi	r22, 0x06	; 6
+ 232:	82 e0       	ldi	r24, 0x02	; 2
+ 234:	09 df       	rcall	.-494    	; 0x48 <error_init>
 	twi_slave_init(AUTOPILOT_ADDRESS);
- 1fc:	81 e0       	ldi	r24, 0x01	; 1
- 1fe:	97 df       	rcall	.-210    	; 0x12e <twi_slave_init>
-
+ 236:	81 e0       	ldi	r24, 0x01	; 1
+ 238:	7a df       	rcall	.-268    	; 0x12e <twi_slave_init>
+	
 	while (1)
 	{
-		if((messagePacketHeader.data[0] == 0x01) && (messagePacketHeader.data[1] == 0x01))
- 200:	c5 e6       	ldi	r28, 0x65	; 101
- 202:	d0 e0       	ldi	r29, 0x00	; 0
- 204:	8c 81       	ldd	r24, Y+4	; 0x04
- 206:	81 30       	cpi	r24, 0x01	; 1
- 208:	41 f4       	brne	.+16     	; 0x21a <main+0x28>
- 20a:	8d 81       	ldd	r24, Y+5	; 0x05
- 20c:	81 30       	cpi	r24, 0x01	; 1
- 20e:	29 f4       	brne	.+10     	; 0x21a <main+0x28>
+		if((messagePacketHeader.data[0] == SET_HEADING) && (messagePacketHeader.data[1] == 0x01) && (messagePacketHeader.data[2] == 0x01))
+ 23a:	c3 e6       	ldi	r28, 0x63	; 99
+ 23c:	d0 e0       	ldi	r29, 0x00	; 0
+ 23e:	8b 81       	ldd	r24, Y+3	; 0x03
+ 240:	81 30       	cpi	r24, 0x01	; 1
+ 242:	59 f4       	brne	.+22     	; 0x25a <main+0x2e>
+ 244:	8c 81       	ldd	r24, Y+4	; 0x04
+ 246:	81 30       	cpi	r24, 0x01	; 1
+ 248:	41 f4       	brne	.+16     	; 0x25a <main+0x2e>
+ 24a:	8d 81       	ldd	r24, Y+5	; 0x05
+ 24c:	81 30       	cpi	r24, 0x01	; 1
+ 24e:	29 f4       	brne	.+10     	; 0x25a <main+0x2e>
 		{
 			IO_write(ERROR_PORT,ERROR_LED_GREEN_PIN,SET);
- 210:	41 e0       	ldi	r20, 0x01	; 1
- 212:	66 e0       	ldi	r22, 0x06	; 6
- 214:	82 e0       	ldi	r24, 0x02	; 2
- 216:	27 df       	rcall	.-434    	; 0x66 <IO_write>
- 218:	f5 cf       	rjmp	.-22     	; 0x204 <main+0x12>
+ 250:	41 e0       	ldi	r20, 0x01	; 1
+ 252:	66 e0       	ldi	r22, 0x06	; 6
+ 254:	82 e0       	ldi	r24, 0x02	; 2
+ 256:	07 df       	rcall	.-498    	; 0x66 <IO_write>
+ 258:	f2 cf       	rjmp	.-28     	; 0x23e <main+0x12>
 		}
 		else
 		{
 			IO_flash(ERROR_PORT,ERROR_LED_GREEN_PIN);
- 21a:	66 e0       	ldi	r22, 0x06	; 6
- 21c:	82 e0       	ldi	r24, 0x02	; 2
- 21e:	68 df       	rcall	.-304    	; 0xf0 <IO_flash>
- 220:	f1 cf       	rjmp	.-30     	; 0x204 <main+0x12>
+ 25a:	66 e0       	ldi	r22, 0x06	; 6
+ 25c:	82 e0       	ldi	r24, 0x02	; 2
+ 25e:	48 df       	rcall	.-368    	; 0xf0 <IO_flash>
+ 260:	ee cf       	rjmp	.-36     	; 0x23e <main+0x12>
 
-00000222 <_exit>:
- 222:	f8 94       	cli
+00000262 <_exit>:
+ 262:	f8 94       	cli
 
-00000224 <__stop_program>:
- 224:	ff cf       	rjmp	.-2      	; 0x224 <__stop_program>
+00000264 <__stop_program>:
+ 264:	ff cf       	rjmp	.-2      	; 0x264 <__stop_program>

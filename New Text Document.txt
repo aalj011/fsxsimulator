@@ -1,0 +1,1 @@
+http://electronics.stackexchange.com/questions/57940/establishing-a-proper-twi-i2c-communication-between-a-pair-of-atmega32

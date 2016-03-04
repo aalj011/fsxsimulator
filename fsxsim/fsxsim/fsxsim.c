@@ -15,8 +15,7 @@
 static uint8_t msg_count = 0;
 uint8_t tw_status;
 static uint8_t send_message(uint8_t bytes[]);
-
-sMessagePacket messagePacketHeader;
+static sMessagePacket messagePacketHeader = {0};
 
 ISR(TWI_vect)
 {
@@ -31,26 +30,12 @@ ISR(TWI_vect)
 			twi_master_sla_send_address(messagePacketHeader.address, messagePacketHeader.control);					// broadcast slave address
 			break;
 		}
-		case MASTER_REPEAT_TX:
-		{
-			error_handler(SET);
-			break;
-		}
-		case MASTER_SLA_R_ACK_RX:
-		{
-			error_handler(SET);
-			break;
-		}
-		case MASTER_SLA_R_NACK_RX:
-		{
-			error_handler(SET);											// error occurred
-			break;
-		}
 		case MASTER_SLA_W_ACK_RX:
 		{
+			//init variables for sending data
 			msg_count = 0;
-			//command type
-			twi_send_data(messagePacketHeader.command);
+			//send the sync bit
+			twi_send_data(messagePacketHeader.syncbit);
 			break;
 		}
 		case MASTER_SLA_W_NACK_RX:
@@ -60,23 +45,20 @@ ISR(TWI_vect)
 		}
 		case MASTER_DATA_TX_ACK_RX:
 		{
-			
-			//Send the message data
 			if(!send_message(messagePacketHeader.data))
 			{
 				twi_master_stop_condition();
-			}			
+			}
+			break;
+		}
+		case MASTER_REPEAT_TX:
+		{
+			twi_clear_twint();
 			break;
 		}
 		case MASTER_DATA_TX_NACK_RX:
 		{
-			twi_master_stop_condition();
-			error_handler(SET);	
-			break;
-		}
-		case MASTER_DATA_RX_NACK_TX:
-		{
-			error_handler(SET);													// error occurred	
+			error_handler(SET);
 			break;
 		}
 		default:
@@ -96,7 +78,7 @@ static uint8_t send_message(uint8_t bytes[])
 	{
 		twi_send_data(bytes[msg_count]);
 		msg_count++;
-		status = 1;
+		status = 1;	
 	}
 	else
 	{
@@ -109,20 +91,19 @@ static uint8_t send_message(uint8_t bytes[])
 
 int main(void)
 {
+	//Send message to Autopilot
+	messagePacketHeader.address = AUTOPILOT_ADDRESS;
+	messagePacketHeader.control = TWI_WRITE;
+	messagePacketHeader.syncbit = SYNCBIT;
+	messagePacketHeader.data[0] = SET_HEADING;
+	messagePacketHeader.data[1] = 0x01;
+	messagePacketHeader.data[2] = 0x01;
+	
 	sei();
 	error_init(ERROR_PORT, ERROR_LED_GREEN_PIN, ERROR_LED_RED_PIN);
 	twi_master_init();
 	twi_master_start_condition();
 
-	
-	//Send message to Autopilot
-	messagePacketHeader.address = AUTOPILOT_ADDRESS;
-	messagePacketHeader.control = TWI_WRITE; 
-	messagePacketHeader.start_bit = START_BIT;
-	messagePacketHeader.command = SET_HEADING;
-	messagePacketHeader.data[0] = 0x01;
-	messagePacketHeader.data[1] = 0x01;
-	
 	while (1) 
 	{
 		IO_flash(ERROR_PORT,ERROR_LED_GREEN_PIN);

@@ -11,9 +11,8 @@
 #define SET 1
 #define CLEAR 0
 #define AUTOPILOT_ADDRESS 0x01
-#define START_BIT 0xFF
-#define MSG_SIZE 2
-#define COMMAND_DATA_SIZE 2
+#define SYNCBIT 0xB6
+#define MSG_SIZE 3
 
 typedef enum
 {
@@ -24,6 +23,7 @@ typedef enum
 
 typedef enum
 {
+	NONE,
 	SET_HEADING,
 	GET_HEADING,
 }eCommands;
@@ -32,9 +32,8 @@ typedef struct
 {
 	uint8_t address;
 	uint8_t control;
-	uint8_t start_bit;
-	eCommands command;
-	uint8_t data[COMMAND_DATA_SIZE];	
+	uint8_t syncbit;
+	uint8_t data[MSG_SIZE];	
 }sMessagePacket;
 
 
