@@ -33,53 +33,6 @@ void twi_master_init(void)
 }
 
 /*****************************************************************************
-Name:			twi_master_start_condition
-Purpose:		This function invokes the start condition for Master twi communication
-Parameters:		none
-Returns:		None
-Note:			None
-****************************************************************************/
-void twi_master_start_condition(void)
-{	
-	TWCR =	(1<<TWEN)|														//Enables TWI interface
-			(1<<TWIE)|(1<<TWINT)|											//Enable interrupt
-			(0<<TWEA)|(1<<TWSTA)|(0<<TWSTO)|								//Enabling the start condition bit 
-			(0<<TWWC);
-	//flagwait();														//write collision flag to zero	
-}
-
-
-/*****************************************************************************
-Name:			twi_master_stop_Condition
-Purpose:		This function invokes the stop condition for twi communication
-Parameters:		none
-Returns:		None
-Note:			None
-****************************************************************************/
-void twi_master_stop_condition(void)
-{
-	TWCR =	(1<<TWEN)|														//Enables TWI interface
-			(1<<TWIE)|(1<<TWINT)|											//Enable interrupt
-			(0<<TWEA)|(0<<TWSTA)|(1<<TWSTO)|								//Enabling the stop condition bit 
-			(0<<TWWC);														//write collision flag to zero	
-}
-
-/*****************************************************************************
-Name:			twi_master_repeatCondition
-Purpose:		This function invokes the repeat condition for twi communication
-Parameters:		none
-Returns:		None
-Note:			None
-****************************************************************************/
-void twi_master_repeat_condition(void)
-{
-	TWCR =	(1<<TWEN)|														//Enables TWI interface
-			(1<<TWIE)|(1<<TWINT)|											//Enable interrupt
-			(0<<TWEA)|(1<<TWSTA)|(0<<TWSTO)|								//Enabling the start condition bit 
-			(0<<TWWC);														//write collision flag to zero	
-}
-
-/*****************************************************************************
 Name:			twi_master_sla_sendAddress
 Purpose:		This function sends the Slave address and the read/write bit 
 Parameters:		address, the address of the device slave required, a list of
@@ -110,12 +63,7 @@ Note:			None
 ****************************************************************************/
 void twi_send_data(uint8_t data)
 {	
-	TWDR = data;
-	
-	TWCR =	(1<<TWEN)|															//Enables TWI interface
-			(1<<TWIE)|(1<<TWINT)|												//Enable interrupt
-			(0<<TWEA)|(0<<TWSTA)|(0<<TWSTO)|									//Enabling the start condition bit 
-			(0<<TWWC);															//Data to transmit
+	TWDR = data;	
 }
 /*****************************************************************************
 Name:			twi_master_tx_nack
@@ -170,7 +118,7 @@ Parameters:		none
 Returns:		None
 Note:			None
 ****************************************************************************/
-void twi_slave_tx_ack(void)
+void twi_tx_ack(void)
 {	
 	TWCR =	(1<<TWEN)|														//Enables TWI interface
 			(1<<TWIE)|(1<<TWINT)|											//Enable interrupt
@@ -184,7 +132,7 @@ Parameters:		none
 Returns:		None
 Note:			None
 ****************************************************************************/
-void twi_slave_tx_nack(void)
+void twi_tx_nack(void)
 {		
 	TWCR = (1<<TWINT)|(1<<TWEN)|(0<<TWEA)|(1<<TWIE);											
 }

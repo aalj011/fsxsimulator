@@ -23,6 +23,14 @@
 #define MASK					0xF8
 			
 
+
+#define TWI_SendStart()			(TWCR = (1<<TWINT)|(1<<TWSTA)|(1<<TWEN)|(1<<TWIE))
+#define TWI_SendStop()			(TWCR = (1<<TWINT)|(1<<TWSTO)|(1<<TWEN)|(1<<TWIE))
+#define TWI_SendTransmit()		(TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWIE)) 
+#define TWI_SendACK()			(TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWIE)|(1<<TWEA))
+#define TWI_SendNACK()			(TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWIE))
+
+
 //Master defines 
 //**************************************************
 #define MASTER_SLA_W_ACK_RX						0x18

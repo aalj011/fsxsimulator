@@ -19,8 +19,8 @@ void twi_master_tx_ack(void);
 
 
 void twi_slave_init(uint8_t slaveaddress);
-void twi_slave_tx_ack(void);
-void twi_slave_tx_nack(void);
+void twi_tx_ack(void);
+void twi_tx_nack(void);
 
 void twi_clear_twint(void);
 uint8_t twi_read_data(void);

@@ -202,3 +202,17 @@ void IO_flash(ports port, uint8_t pinnumber)
 	IO_write(port, pinnumber, SET);
 	_delay_ms(2000);
 }
+
+/*****************************************************************************
+Name:			IO_flash_slow
+Purpose:		Flashes the IO slowely of choosing (only once)
+Parameters:		port this specifies the port required to flash and Pin number
+Returns:		None
+*****************************************************************************/
+void IO_flash_slow(ports port, uint8_t pinnumber)
+{
+	IO_write(port, pinnumber, CLEAR);
+	_delay_ms(5000);
+	IO_write(port, pinnumber, SET);
+	_delay_ms(5000);
+}

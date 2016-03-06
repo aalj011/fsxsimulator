@@ -23,7 +23,8 @@ uint8_t syncByteFound = 0;
 static sMessagePacket messagePacketHeader = {0};
 
 static uint8_t recieve_message(void);
-
+static void init_variables(void);
+static uint8_t send_message(uint8_t bytes[]);
 
 ISR(TWI_vect)
 {
@@ -31,42 +32,53 @@ ISR(TWI_vect)
 	tw_status = (TWSR & MASK);
 	
 	switch(tw_status)
-	{	
+	{
+		/*******************************WRITE MODE**************************************/	
 		case SLAVE_SLA_W_ACK_TX:
 		{
-			//Initilise the message receive packet
-			msg_count = 0;
-			syncByteFound = 0;
-			messagePacketHeader.data[0] = 0x00;
-			messagePacketHeader.data[1] = 0x00;
-			messagePacketHeader.data[2] = 0x00;
-			twi_clear_twint();
+			init_variables();
+			TWI_SendACK();
 			break;
 		}	
 		case SLAVE_DATA_RX_ACK_TX:
 		{
 			if(recieve_message())
 			{
-				twi_slave_tx_ack();
+				TWI_SendACK();
 			}
 			else
 			{
-				twi_slave_tx_nack();
+				TWI_SendNACK();
 			}
 			break;
 		}
+		case SLAVE_DATA_RX_NACK_TX:
+		{
+			init_variables();
+			error_handler(SET);
+		}
+		/*******************************************************************************/
+		/*******************************READ MODE***************************************/
+		/*******************************************************************************/
 		case SLAVE_BUS_ERROR:
 		{
-			twi_slave_init(AUTOPILOT_ADDRESS);	
+			//twi_slave_init(AUTOPILOT_ADDRESS);	
 			break;
 		}
 		default:
 		{
-			twi_clear_twint();
+			TWI_SendTransmit();
 			break;
 		}
 	}
 	sei();
+}
+
+static void init_variables(void)
+{
+	memset(messagePacketHeader.data, 0, sizeof(messagePacketHeader.data));
+	msg_count = 0;
+	syncByteFound = 0;
 }
 
 static uint8_t recieve_message(void)
@@ -97,6 +109,26 @@ static uint8_t recieve_message(void)
 	return status;
 }
 
+static uint8_t send_message(uint8_t bytes[])
+{
+	uint8_t status = 0;
+	
+	//Send the message data only
+	if(msg_count < MSG_SIZE)
+	{
+		//Load TWDR buffer
+		twi_send_data(bytes[msg_count]);
+		msg_count++;
+		status = 1;
+	}
+	else
+	{
+		msg_count =0;
+	}
+	
+	return 	status;
+}
+
 int main(void)
 {	
 	sei();
@@ -107,7 +139,7 @@ int main(void)
 	{
 		if((messagePacketHeader.data[0] == SET_HEADING) && (messagePacketHeader.data[1] == 0x01) && (messagePacketHeader.data[2] == 0x01))
 		{
-			IO_write(ERROR_PORT,ERROR_LED_GREEN_PIN,SET);
+			IO_flash_slow(ERROR_PORT,ERROR_LED_GREEN_PIN);
 		}
 		else
 		{
