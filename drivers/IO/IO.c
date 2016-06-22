@@ -212,7 +212,7 @@ Returns:		None
 void IO_flash_slow(ports port, uint8_t pinnumber)
 {
 	IO_write(port, pinnumber, CLEAR);
-	_delay_ms(5000);
+	_delay_ms(10000);
 	IO_write(port, pinnumber, SET);
-	_delay_ms(5000);
+	_delay_ms(10000);
 }

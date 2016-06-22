@@ -34,6 +34,7 @@ typedef struct
 	uint8_t control;
 	uint8_t syncbit;
 	uint8_t data[MSG_SIZE];	
+	uint8_t dataLen;
 }sMessagePacket;
 
 

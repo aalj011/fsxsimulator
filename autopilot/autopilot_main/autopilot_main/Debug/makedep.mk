@@ -6,7 +6,7 @@
 
 ..\..\..\drivers\IO\IO.c
 
-..\..\..\drivers\twi\twi.c
+..\..\..\drivers\twi\twi_ext.c
 
 autopilot_main.c
 

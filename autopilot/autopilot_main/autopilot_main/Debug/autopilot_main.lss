@@ -3,31 +3,31 @@ autopilot_main.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         000002e2  00000000  00000000  00000074  2**1
+  0 .text         000002ae  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000000  00800060  00800060  00000356  2**0
+  1 .data         00000000  00800060  00800060  00000322  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          0000000c  00800060  00800060  00000356  2**0
+  2 .bss          00000071  00800060  00800060  00000322  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  00000356  2**0
+  3 .comment      00000030  00000000  00000000  00000322  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000388  2**2
+  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000354  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000100  00000000  00000000  000003c4  2**0
+  5 .debug_aranges 000000d0  00000000  00000000  00000390  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00000a67  00000000  00000000  000004c4  2**0
+  6 .debug_info   000009d8  00000000  00000000  00000460  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00000511  00000000  00000000  00000f2b  2**0
+  7 .debug_abbrev 000004a9  00000000  00000000  00000e38  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   0000057f  00000000  00000000  0000143c  2**0
+  8 .debug_line   000006c4  00000000  00000000  000012e1  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  000001fc  00000000  00000000  000019bc  2**2
+  9 .debug_frame  00000198  00000000  00000000  000019a8  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    0000043b  00000000  00000000  00001bb8  2**0
+ 10 .debug_str    0000040c  00000000  00000000  00001b40  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    000004ba  00000000  00000000  00001ff3  2**0
+ 11 .debug_loc    0000045d  00000000  00000000  00001f4c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 000000d8  00000000  00000000  000024ad  2**0
+ 12 .debug_ranges 00000090  00000000  00000000  000023a9  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -50,7 +50,7 @@ Disassembly of section .text:
   1c:	14 c0       	rjmp	.+40     	; 0x46 <__bad_interrupt>
   1e:	13 c0       	rjmp	.+38     	; 0x46 <__bad_interrupt>
   20:	12 c0       	rjmp	.+36     	; 0x46 <__bad_interrupt>
-  22:	d7 c0       	rjmp	.+430    	; 0x1d2 <__vector_17>
+  22:	c8 c0       	rjmp	.+400    	; 0x1b4 <__vector_17>
   24:	10 c0       	rjmp	.+32     	; 0x46 <__bad_interrupt>
 
 00000026 <__ctors_end>:
@@ -71,11 +71,11 @@ Disassembly of section .text:
   3a:	1d 92       	st	X+, r1
 
 0000003c <.do_clear_bss_start>:
-  3c:	ac 36       	cpi	r26, 0x6C	; 108
+  3c:	a1 3d       	cpi	r26, 0xD1	; 209
   3e:	b2 07       	cpc	r27, r18
   40:	e1 f7       	brne	.-8      	; 0x3a <.do_clear_bss_loop>
-  42:	33 d1       	rcall	.+614    	; 0x2aa <main>
-  44:	4c c1       	rjmp	.+664    	; 0x2de <_exit>
+  42:	18 d1       	rcall	.+560    	; 0x274 <main>
+  44:	32 c1       	rjmp	.+612    	; 0x2aa <_exit>
 
 00000046 <__bad_interrupt>:
   46:	dc cf       	rjmp	.-72     	; 0x0 <__vectors>
@@ -151,24 +151,18 @@ void error_handler(uint8_t status)
   a0:	08 95       	ret
 
 000000a2 <IO_write>:
-				state specifies whether we want to set the pin high or low.
-Note:			None
-*****************************************************************************/
-void IO_write(ports port, uint8_t pinnumber,uint8_t state)
-{
-	switch (port)
+			break;
+		}
+	}
+	
+	return pinvalue;
+}
   a2:	81 30       	cpi	r24, 0x01	; 1
   a4:	c9 f0       	breq	.+50     	; 0xd8 <IO_write+0x36>
   a6:	18 f0       	brcs	.+6      	; 0xae <IO_write+0xc>
   a8:	82 30       	cpi	r24, 0x02	; 2
   aa:	59 f1       	breq	.+86     	; 0x102 <IO_write+0x60>
   ac:	08 95       	ret
-	{
-		case PORT_B:
-		{
-			#ifdef PORTB
-			//set the pinnumber as output
-			DDRB |= (1 << pinnumber);
   ae:	27 b3       	in	r18, 0x17	; 23
   b0:	81 e0       	ldi	r24, 0x01	; 1
   b2:	90 e0       	ldi	r25, 0x00	; 0
@@ -179,30 +173,17 @@ void IO_write(ports port, uint8_t pinnumber,uint8_t state)
   bc:	e2 f7       	brpl	.-8      	; 0xb6 <IO_write+0x14>
   be:	28 2b       	or	r18, r24
   c0:	27 bb       	out	0x17, r18	; 23
-			if(state)
   c2:	44 23       	and	r20, r20
   c4:	21 f0       	breq	.+8      	; 0xce <IO_write+0x2c>
-			{
-				PORTB |= (1 << pinnumber);
   c6:	98 b3       	in	r25, 0x18	; 24
   c8:	89 2b       	or	r24, r25
   ca:	88 bb       	out	0x18, r24	; 24
   cc:	08 95       	ret
-			}
-			else
-			{
-				PORTB &= ~(1<< pinnumber);
   ce:	98 b3       	in	r25, 0x18	; 24
   d0:	80 95       	com	r24
   d2:	89 23       	and	r24, r25
   d4:	88 bb       	out	0x18, r24	; 24
   d6:	08 95       	ret
-		}
-		case PORT_C:
-		{
-			#ifdef PORTC
-			//set the pinnumber as output
-			DDRC |= (1 << pinnumber);
   d8:	24 b3       	in	r18, 0x14	; 20
   da:	81 e0       	ldi	r24, 0x01	; 1
   dc:	90 e0       	ldi	r25, 0x00	; 0
@@ -213,30 +194,17 @@ void IO_write(ports port, uint8_t pinnumber,uint8_t state)
   e6:	e2 f7       	brpl	.-8      	; 0xe0 <IO_write+0x3e>
   e8:	28 2b       	or	r18, r24
   ea:	24 bb       	out	0x14, r18	; 20
-			if(state)
   ec:	44 23       	and	r20, r20
   ee:	21 f0       	breq	.+8      	; 0xf8 <IO_write+0x56>
-			{
-				PORTC |= (1 << pinnumber);
   f0:	95 b3       	in	r25, 0x15	; 21
   f2:	89 2b       	or	r24, r25
   f4:	85 bb       	out	0x15, r24	; 21
   f6:	08 95       	ret
-			}
-			else
-			{
-				PORTC &= ~(1<< pinnumber);
   f8:	95 b3       	in	r25, 0x15	; 21
   fa:	80 95       	com	r24
   fc:	89 23       	and	r24, r25
   fe:	85 bb       	out	0x15, r24	; 21
  100:	08 95       	ret
-		}
-		case PORT_D:
-		{
-			#ifdef PORTD
-			//set the pinnumber as output
-			DDRD |= (1 << pinnumber);
  102:	21 b3       	in	r18, 0x11	; 17
  104:	81 e0       	ldi	r24, 0x01	; 1
  106:	90 e0       	ldi	r25, 0x00	; 0
@@ -247,19 +215,12 @@ void IO_write(ports port, uint8_t pinnumber,uint8_t state)
  110:	e2 f7       	brpl	.-8      	; 0x10a <IO_write+0x68>
  112:	28 2b       	or	r18, r24
  114:	21 bb       	out	0x11, r18	; 17
-			if(state)
  116:	44 23       	and	r20, r20
  118:	21 f0       	breq	.+8      	; 0x122 <IO_write+0x80>
-			{
-				PORTD |= (1 << pinnumber);
  11a:	92 b3       	in	r25, 0x12	; 18
  11c:	89 2b       	or	r24, r25
  11e:	82 bb       	out	0x12, r24	; 18
  120:	08 95       	ret
-			}
-			else
-			{
-				PORTD &= ~(1<< pinnumber);
  122:	92 b3       	in	r25, 0x12	; 18
  124:	80 95       	com	r24
  126:	89 23       	and	r24, r25
@@ -330,316 +291,259 @@ void IO_flash_slow(ports port, uint8_t pinnumber)
 	IO_write(port, pinnumber, CLEAR);
  172:	40 e0       	ldi	r20, 0x00	; 0
  174:	96 df       	rcall	.-212    	; 0xa2 <IO_write>
- 176:	2f e3       	ldi	r18, 0x3F	; 63
- 178:	82 e4       	ldi	r24, 0x42	; 66
- 17a:	9f e0       	ldi	r25, 0x0F	; 15
+ 176:	2f e7       	ldi	r18, 0x7F	; 127
+ 178:	84 e8       	ldi	r24, 0x84	; 132
+ 17a:	9e e1       	ldi	r25, 0x1E	; 30
  17c:	21 50       	subi	r18, 0x01	; 1
  17e:	80 40       	sbci	r24, 0x00	; 0
  180:	90 40       	sbci	r25, 0x00	; 0
  182:	e1 f7       	brne	.-8      	; 0x17c <IO_flash_slow+0x12>
  184:	00 c0       	rjmp	.+0      	; 0x186 <IO_flash_slow+0x1c>
  186:	00 00       	nop
-	_delay_ms(5000);
+	_delay_ms(10000);
 	IO_write(port, pinnumber, SET);
  188:	41 e0       	ldi	r20, 0x01	; 1
  18a:	6d 2f       	mov	r22, r29
  18c:	8c 2f       	mov	r24, r28
  18e:	89 df       	rcall	.-238    	; 0xa2 <IO_write>
- 190:	2f e3       	ldi	r18, 0x3F	; 63
- 192:	82 e4       	ldi	r24, 0x42	; 66
- 194:	9f e0       	ldi	r25, 0x0F	; 15
+ 190:	2f e7       	ldi	r18, 0x7F	; 127
+ 192:	84 e8       	ldi	r24, 0x84	; 132
+ 194:	9e e1       	ldi	r25, 0x1E	; 30
  196:	21 50       	subi	r18, 0x01	; 1
  198:	80 40       	sbci	r24, 0x00	; 0
  19a:	90 40       	sbci	r25, 0x00	; 0
  19c:	e1 f7       	brne	.-8      	; 0x196 <IO_flash_slow+0x2c>
  19e:	00 c0       	rjmp	.+0      	; 0x1a0 <IO_flash_slow+0x36>
  1a0:	00 00       	nop
-	_delay_ms(5000);
+	_delay_ms(10000);
  1a2:	df 91       	pop	r29
  1a4:	cf 91       	pop	r28
  1a6:	08 95       	ret
 
-000001a8 <twi_slave_init>:
+000001a8 <TWI_EXT_SlaveLoadAddress>:
 Returns:		None
 Note:			None
 ****************************************************************************/
-void twi_slave_init(uint8_t slaveaddress)
+void TWI_EXT_SlaveLoadAddress(uint8_t slaveaddress)
 {	
-	TWAR = (slaveaddress<<1);
+	TWAR = (slaveaddress<<1);																				//Load the slave addres
  1a8:	88 0f       	add	r24, r24
  1aa:	82 b9       	out	0x02, r24	; 2
-																						//Load the slave address
-	TWCR = (1<<TWEN)|														//Enables TWI interface
- 1ac:	85 ec       	ldi	r24, 0xC5	; 197
- 1ae:	86 bf       	out	0x36, r24	; 54
+ 1ac:	08 95       	ret
+
+000001ae <TWI_EXT_SlaveInit>:
 Returns:		None
 Note:			None
 ****************************************************************************/
-static void flagwait(void)
+void TWI_EXT_SlaveInit(void)
 {
-	while(!(TWCR &(1<<TWINT)));
- 1b0:	06 b6       	in	r0, 0x36	; 54
- 1b2:	07 fe       	sbrs	r0, 7
- 1b4:	fd cf       	rjmp	.-6      	; 0x1b0 <twi_slave_init+0x8>
-			(1<<TWIE)|(1<<TWINT)|											//Enable interrupt
-			(1<<TWEA)|(0<<TWSTA)|(0<<TWSTO)|								//Enabling the start condition bit 
-			(0<<TWWC);														//Enable twi
-																			//Wait till flag is cleared	
-	flagwait();
-}
- 1b6:	08 95       	ret
+	TWCR = (1<<TWEA)|(1<<TWEN)|(1<<TWIE);
+ 1ae:	85 e4       	ldi	r24, 0x45	; 69
+ 1b0:	86 bf       	out	0x36, r24	; 54
+ 1b2:	08 95       	ret
 
-000001b8 <twi_read_data>:
-Note:			None
-****************************************************************************/
-uint8_t twi_read_data(void)
-{
-	uint8_t rxdata = 0;
-	rxdata = TWDR;
- 1b8:	83 b1       	in	r24, 0x03	; 3
-		
-	return rxdata;
-}
- 1ba:	08 95       	ret
+000001b4 <__vector_17>:
+static sMessagePacket messagePacketHeader = {0};
 
-000001bc <init_variables>:
-	sei();
-}
-
-static void init_variables(void)
-{
-	memset(messagePacketHeader.data, 0, sizeof(messagePacketHeader.data));
- 1bc:	10 92 66 00 	sts	0x0066, r1
- 1c0:	10 92 67 00 	sts	0x0067, r1
- 1c4:	10 92 68 00 	sts	0x0068, r1
-	msg_count = 0;
- 1c8:	10 92 6b 00 	sts	0x006B, r1
-	syncByteFound = 0;
- 1cc:	10 92 69 00 	sts	0x0069, r1
- 1d0:	08 95       	ret
-
-000001d2 <__vector_17>:
-static uint8_t recieve_message(void);
-static void init_variables(void);
-static uint8_t send_message(uint8_t bytes[]);
+static void init_Variables(void);
 
 ISR(TWI_vect)
 {
- 1d2:	1f 92       	push	r1
- 1d4:	0f 92       	push	r0
- 1d6:	0f b6       	in	r0, 0x3f	; 63
- 1d8:	0f 92       	push	r0
- 1da:	11 24       	eor	r1, r1
- 1dc:	2f 93       	push	r18
- 1de:	3f 93       	push	r19
- 1e0:	4f 93       	push	r20
- 1e2:	5f 93       	push	r21
- 1e4:	6f 93       	push	r22
- 1e6:	7f 93       	push	r23
- 1e8:	8f 93       	push	r24
- 1ea:	9f 93       	push	r25
- 1ec:	af 93       	push	r26
- 1ee:	bf 93       	push	r27
- 1f0:	cf 93       	push	r28
- 1f2:	ef 93       	push	r30
- 1f4:	ff 93       	push	r31
+ 1b4:	1f 92       	push	r1
+ 1b6:	0f 92       	push	r0
+ 1b8:	0f b6       	in	r0, 0x3f	; 63
+ 1ba:	0f 92       	push	r0
+ 1bc:	11 24       	eor	r1, r1
+ 1be:	2f 93       	push	r18
+ 1c0:	3f 93       	push	r19
+ 1c2:	4f 93       	push	r20
+ 1c4:	5f 93       	push	r21
+ 1c6:	6f 93       	push	r22
+ 1c8:	7f 93       	push	r23
+ 1ca:	8f 93       	push	r24
+ 1cc:	9f 93       	push	r25
+ 1ce:	af 93       	push	r26
+ 1d0:	bf 93       	push	r27
+ 1d2:	ef 93       	push	r30
+ 1d4:	ff 93       	push	r31
 	cli();
- 1f6:	f8 94       	cli
-	tw_status = (TWSR & MASK);
- 1f8:	81 b1       	in	r24, 0x01	; 1
- 1fa:	88 7f       	andi	r24, 0xF8	; 248
- 1fc:	80 93 6a 00 	sts	0x006A, r24
-	
-	switch(tw_status)
- 200:	80 36       	cpi	r24, 0x60	; 96
- 202:	49 f0       	breq	.+18     	; 0x216 <__vector_17+0x44>
- 204:	18 f4       	brcc	.+6      	; 0x20c <__vector_17+0x3a>
- 206:	88 23       	and	r24, r24
- 208:	99 f1       	breq	.+102    	; 0x270 <__vector_17+0x9e>
- 20a:	30 c0       	rjmp	.+96     	; 0x26c <__vector_17+0x9a>
- 20c:	80 38       	cpi	r24, 0x80	; 128
- 20e:	39 f0       	breq	.+14     	; 0x21e <__vector_17+0x4c>
- 210:	88 38       	cpi	r24, 0x88	; 136
- 212:	41 f1       	breq	.+80     	; 0x264 <__vector_17+0x92>
- 214:	2b c0       	rjmp	.+86     	; 0x26c <__vector_17+0x9a>
-	{
-		/*******************************WRITE MODE**************************************/	
-		case SLAVE_SLA_W_ACK_TX:
-		{
-			init_variables();
- 216:	d2 df       	rcall	.-92     	; 0x1bc <init_variables>
-			TWI_SendACK();
- 218:	85 ec       	ldi	r24, 0xC5	; 197
- 21a:	86 bf       	out	0x36, r24	; 54
-			break;
- 21c:	29 c0       	rjmp	.+82     	; 0x270 <__vector_17+0x9e>
-static uint8_t recieve_message(void)
-{
-	uint8_t status = 0;
-	
-	//Check to see if the first rx data is the sync bit
-	if((twi_read_data() == SYNCBIT) && (msg_count == 0) && (!syncByteFound))
- 21e:	cc df       	rcall	.-104    	; 0x1b8 <twi_read_data>
- 220:	86 3b       	cpi	r24, 0xB6	; 182
- 222:	61 f4       	brne	.+24     	; 0x23c <__vector_17+0x6a>
- 224:	80 91 6b 00 	lds	r24, 0x006B
- 228:	81 11       	cpse	r24, r1
- 22a:	08 c0       	rjmp	.+16     	; 0x23c <__vector_17+0x6a>
- 22c:	80 91 69 00 	lds	r24, 0x0069
- 230:	81 11       	cpse	r24, r1
- 232:	26 c0       	rjmp	.+76     	; 0x280 <__vector_17+0xae>
-	{
-		syncByteFound = 1;
- 234:	81 e0       	ldi	r24, 0x01	; 1
- 236:	80 93 69 00 	sts	0x0069, r24
- 23a:	1c c0       	rjmp	.+56     	; 0x274 <__vector_17+0xa2>
-		status = 1;
-	}
-	//sync bit found ready to rx data
-	else if(syncByteFound)
- 23c:	80 91 69 00 	lds	r24, 0x0069
- 240:	88 23       	and	r24, r24
- 242:	d9 f0       	breq	.+54     	; 0x27a <__vector_17+0xa8>
-	{
-		if(msg_count < MSG_SIZE)
- 244:	c0 91 6b 00 	lds	r28, 0x006B
- 248:	c3 30       	cpi	r28, 0x03	; 3
- 24a:	b8 f4       	brcc	.+46     	; 0x27a <__vector_17+0xa8>
-		{
-			messagePacketHeader.data[msg_count] = twi_read_data();
- 24c:	b5 df       	rcall	.-150    	; 0x1b8 <twi_read_data>
- 24e:	ec 2f       	mov	r30, r28
- 250:	f0 e0       	ldi	r31, 0x00	; 0
- 252:	ed 59       	subi	r30, 0x9D	; 157
- 254:	ff 4f       	sbci	r31, 0xFF	; 255
- 256:	83 83       	std	Z+3, r24	; 0x03
-			msg_count++;
- 258:	80 91 6b 00 	lds	r24, 0x006B
- 25c:	8f 5f       	subi	r24, 0xFF	; 255
- 25e:	80 93 6b 00 	sts	0x006B, r24
- 262:	08 c0       	rjmp	.+16     	; 0x274 <__vector_17+0xa2>
-			}
-			break;
-		}
-		case SLAVE_DATA_RX_NACK_TX:
-		{
-			init_variables();
- 264:	ab df       	rcall	.-170    	; 0x1bc <init_variables>
-			error_handler(SET);
- 266:	81 e0       	ldi	r24, 0x01	; 1
- 268:	fe de       	rcall	.-516    	; 0x66 <error_handler>
- 26a:	02 c0       	rjmp	.+4      	; 0x270 <__vector_17+0x9e>
-			//twi_slave_init(AUTOPILOT_ADDRESS);	
-			break;
-		}
-		default:
-		{
-			TWI_SendTransmit();
- 26c:	85 e8       	ldi	r24, 0x85	; 133
- 26e:	86 bf       	out	0x36, r24	; 54
-			break;
-		}
-	}
-	sei();
- 270:	78 94       	sei
- 272:	09 c0       	rjmp	.+18     	; 0x286 <__vector_17+0xb4>
-		}	
-		case SLAVE_DATA_RX_ACK_TX:
-		{
-			if(recieve_message())
-			{
-				TWI_SendACK();
- 274:	85 ec       	ldi	r24, 0xC5	; 197
- 276:	86 bf       	out	0x36, r24	; 54
- 278:	fb cf       	rjmp	.-10     	; 0x270 <__vector_17+0x9e>
-			}
-			else
-			{
-				TWI_SendNACK();
- 27a:	85 e8       	ldi	r24, 0x85	; 133
- 27c:	86 bf       	out	0x36, r24	; 54
- 27e:	f8 cf       	rjmp	.-16     	; 0x270 <__vector_17+0x9e>
-		status = 1;
-	}
-	//sync bit found ready to rx data
-	else if(syncByteFound)
-	{
-		if(msg_count < MSG_SIZE)
- 280:	c0 91 6b 00 	lds	r28, 0x006B
- 284:	e3 cf       	rjmp	.-58     	; 0x24c <__vector_17+0x7a>
-			TWI_SendTransmit();
-			break;
-		}
-	}
+ 1d6:	f8 94       	cli
+	switch(TW_STATUS)
+ 1d8:	81 b1       	in	r24, 0x01	; 1
+ 1da:	88 7f       	andi	r24, 0xF8	; 248
+ 1dc:	80 3a       	cpi	r24, 0xA0	; 160
+ 1de:	b1 f1       	breq	.+108    	; 0x24c <__vector_17+0x98>
+ 1e0:	38 f4       	brcc	.+14     	; 0x1f0 <__vector_17+0x3c>
+ 1e2:	80 38       	cpi	r24, 0x80	; 128
+ 1e4:	c9 f0       	breq	.+50     	; 0x218 <__vector_17+0x64>
+ 1e6:	88 38       	cpi	r24, 0x88	; 136
+ 1e8:	29 f1       	breq	.+74     	; 0x234 <__vector_17+0x80>
+ 1ea:	80 36       	cpi	r24, 0x60	; 96
+ 1ec:	89 f5       	brne	.+98     	; 0x250 <__vector_17+0x9c>
+ 1ee:	07 c0       	rjmp	.+14     	; 0x1fe <__vector_17+0x4a>
+ 1f0:	88 3b       	cpi	r24, 0xB8	; 184
+ 1f2:	31 f1       	breq	.+76     	; 0x240 <__vector_17+0x8c>
+ 1f4:	80 3c       	cpi	r24, 0xC0	; 192
+ 1f6:	39 f1       	breq	.+78     	; 0x246 <__vector_17+0x92>
+ 1f8:	88 3a       	cpi	r24, 0xA8	; 168
+ 1fa:	51 f5       	brne	.+84     	; 0x250 <__vector_17+0x9c>
+ 1fc:	1e c0       	rjmp	.+60     	; 0x23a <__vector_17+0x86>
 	sei();
 }
- 286:	ff 91       	pop	r31
- 288:	ef 91       	pop	r30
- 28a:	cf 91       	pop	r28
- 28c:	bf 91       	pop	r27
- 28e:	af 91       	pop	r26
- 290:	9f 91       	pop	r25
- 292:	8f 91       	pop	r24
- 294:	7f 91       	pop	r23
- 296:	6f 91       	pop	r22
- 298:	5f 91       	pop	r21
- 29a:	4f 91       	pop	r20
- 29c:	3f 91       	pop	r19
- 29e:	2f 91       	pop	r18
- 2a0:	0f 90       	pop	r0
- 2a2:	0f be       	out	0x3f, r0	; 63
- 2a4:	0f 90       	pop	r0
- 2a6:	1f 90       	pop	r1
- 2a8:	18 95       	reti
 
-000002aa <main>:
-	return 	status;
+static void init_Variables(void)
+{
+	memset(messagePacketHeader.data, 0, sizeof(messagePacketHeader.data));
+ 1fe:	10 92 66 00 	sts	0x0066, r1
+ 202:	10 92 67 00 	sts	0x0067, r1
+ 206:	10 92 68 00 	sts	0x0068, r1
+	msg_count = 0;
+ 20a:	10 92 d0 00 	sts	0x00D0, r1
+	syncByteFound = 0;
+ 20e:	10 92 ce 00 	sts	0x00CE, r1
+	switch(TW_STATUS)
+	{
+		case TW_SR_SLA_ACK:
+		{
+			init_Variables();
+			TWI_SendACK();
+ 212:	85 ec       	ldi	r24, 0xC5	; 197
+ 214:	86 bf       	out	0x36, r24	; 54
+			break;
+ 216:	1c c0       	rjmp	.+56     	; 0x250 <__vector_17+0x9c>
+		}	
+		case TW_SR_DATA_ACK:
+		{
+			bytebuffer[msg_count++] = TWDR;
+ 218:	e0 91 d0 00 	lds	r30, 0x00D0
+ 21c:	81 e0       	ldi	r24, 0x01	; 1
+ 21e:	8e 0f       	add	r24, r30
+ 220:	80 93 d0 00 	sts	0x00D0, r24
+ 224:	83 b1       	in	r24, 0x03	; 3
+ 226:	f0 e0       	ldi	r31, 0x00	; 0
+ 228:	e6 59       	subi	r30, 0x96	; 150
+ 22a:	ff 4f       	sbci	r31, 0xFF	; 255
+ 22c:	80 83       	st	Z, r24
+			TWI_SendACK();
+ 22e:	85 ec       	ldi	r24, 0xC5	; 197
+ 230:	86 bf       	out	0x36, r24	; 54
+			break;
+ 232:	0e c0       	rjmp	.+28     	; 0x250 <__vector_17+0x9c>
+		}
+		case TW_SR_DATA_NACK:
+		{
+			error_handler(SET);
+ 234:	81 e0       	ldi	r24, 0x01	; 1
+ 236:	17 df       	rcall	.-466    	; 0x66 <error_handler>
+			break;
+ 238:	0b c0       	rjmp	.+22     	; 0x250 <__vector_17+0x9c>
+		}
+		case TW_ST_SLA_ACK:
+		{
+			error_handler(SET);
+ 23a:	81 e0       	ldi	r24, 0x01	; 1
+ 23c:	14 df       	rcall	.-472    	; 0x66 <error_handler>
+			break;
+ 23e:	08 c0       	rjmp	.+16     	; 0x250 <__vector_17+0x9c>
+		}
+		case TW_ST_DATA_ACK:
+		{
+			error_handler(SET);
+ 240:	81 e0       	ldi	r24, 0x01	; 1
+ 242:	11 df       	rcall	.-478    	; 0x66 <error_handler>
+			break;
+ 244:	05 c0       	rjmp	.+10     	; 0x250 <__vector_17+0x9c>
+		}
+		case TW_ST_DATA_NACK:
+		{
+			error_handler(SET);
+ 246:	81 e0       	ldi	r24, 0x01	; 1
+ 248:	0e df       	rcall	.-484    	; 0x66 <error_handler>
+			break;
+ 24a:	02 c0       	rjmp	.+4      	; 0x250 <__vector_17+0x9c>
+		}
+		case TW_SR_STOP:
+		{
+			TWI_SendTransmit();
+ 24c:	85 e8       	ldi	r24, 0x85	; 133
+ 24e:	86 bf       	out	0x36, r24	; 54
+		default:
+		{
+			break;
+		}
+	}
+	sei();
+ 250:	78 94       	sei
+}
+ 252:	ff 91       	pop	r31
+ 254:	ef 91       	pop	r30
+ 256:	bf 91       	pop	r27
+ 258:	af 91       	pop	r26
+ 25a:	9f 91       	pop	r25
+ 25c:	8f 91       	pop	r24
+ 25e:	7f 91       	pop	r23
+ 260:	6f 91       	pop	r22
+ 262:	5f 91       	pop	r21
+ 264:	4f 91       	pop	r20
+ 266:	3f 91       	pop	r19
+ 268:	2f 91       	pop	r18
+ 26a:	0f 90       	pop	r0
+ 26c:	0f be       	out	0x3f, r0	; 63
+ 26e:	0f 90       	pop	r0
+ 270:	1f 90       	pop	r1
+ 272:	18 95       	reti
+
+00000274 <main>:
+
 }
 
 int main(void)
 {	
 	sei();
- 2aa:	78 94       	sei
+ 274:	78 94       	sei
 	error_init(ERROR_PORT, ERROR_LED_GREEN_PIN, ERROR_LED_RED_PIN);
- 2ac:	47 e0       	ldi	r20, 0x07	; 7
- 2ae:	66 e0       	ldi	r22, 0x06	; 6
- 2b0:	82 e0       	ldi	r24, 0x02	; 2
- 2b2:	ca de       	rcall	.-620    	; 0x48 <error_init>
-	twi_slave_init(AUTOPILOT_ADDRESS);
- 2b4:	81 e0       	ldi	r24, 0x01	; 1
- 2b6:	78 df       	rcall	.-272    	; 0x1a8 <twi_slave_init>
+ 276:	47 e0       	ldi	r20, 0x07	; 7
+ 278:	66 e0       	ldi	r22, 0x06	; 6
+ 27a:	82 e0       	ldi	r24, 0x02	; 2
+ 27c:	e5 de       	rcall	.-566    	; 0x48 <error_init>
+
+	TWI_EXT_SlaveLoadAddress(AUTOPILOT_ADDRESS);
+ 27e:	81 e0       	ldi	r24, 0x01	; 1
+ 280:	93 df       	rcall	.-218    	; 0x1a8 <TWI_EXT_SlaveLoadAddress>
+	TWI_EXT_SlaveInit();
+ 282:	95 df       	rcall	.-214    	; 0x1ae <TWI_EXT_SlaveInit>
 	
 	while (1)
 	{
-		if((messagePacketHeader.data[0] == SET_HEADING) && (messagePacketHeader.data[1] == 0x01) && (messagePacketHeader.data[2] == 0x01))
- 2b8:	c3 e6       	ldi	r28, 0x63	; 99
- 2ba:	d0 e0       	ldi	r29, 0x00	; 0
- 2bc:	8b 81       	ldd	r24, Y+3	; 0x03
- 2be:	81 30       	cpi	r24, 0x01	; 1
- 2c0:	51 f4       	brne	.+20     	; 0x2d6 <main+0x2c>
- 2c2:	8c 81       	ldd	r24, Y+4	; 0x04
- 2c4:	81 30       	cpi	r24, 0x01	; 1
- 2c6:	39 f4       	brne	.+14     	; 0x2d6 <main+0x2c>
- 2c8:	8d 81       	ldd	r24, Y+5	; 0x05
- 2ca:	81 30       	cpi	r24, 0x01	; 1
- 2cc:	21 f4       	brne	.+8      	; 0x2d6 <main+0x2c>
+		if((bytebuffer[0] == SYNCBIT) && (bytebuffer[1] = SET_HEADING) && (bytebuffer[2] == 0x01) && (bytebuffer[3]= 0x01))
+ 284:	ca e6       	ldi	r28, 0x6A	; 106
+ 286:	d0 e0       	ldi	r29, 0x00	; 0
+ 288:	11 e0       	ldi	r17, 0x01	; 1
+ 28a:	88 81       	ld	r24, Y
+ 28c:	86 3b       	cpi	r24, 0xB6	; 182
+ 28e:	49 f4       	brne	.+18     	; 0x2a2 <main+0x2e>
+ 290:	19 83       	std	Y+1, r17	; 0x01
+ 292:	8a 81       	ldd	r24, Y+2	; 0x02
+ 294:	81 30       	cpi	r24, 0x01	; 1
+ 296:	29 f4       	brne	.+10     	; 0x2a2 <main+0x2e>
+ 298:	1b 83       	std	Y+3, r17	; 0x03
 		{
-			IO_flash_slow(ERROR_PORT,ERROR_LED_GREEN_PIN);
- 2ce:	66 e0       	ldi	r22, 0x06	; 6
- 2d0:	82 e0       	ldi	r24, 0x02	; 2
- 2d2:	4b df       	rcall	.-362    	; 0x16a <IO_flash_slow>
- 2d4:	f3 cf       	rjmp	.-26     	; 0x2bc <main+0x12>
+			IO_flash(ERROR_PORT,ERROR_LED_GREEN_PIN);
+ 29a:	66 e0       	ldi	r22, 0x06	; 6
+ 29c:	82 e0       	ldi	r24, 0x02	; 2
+ 29e:	46 df       	rcall	.-372    	; 0x12c <IO_flash>
+ 2a0:	f4 cf       	rjmp	.-24     	; 0x28a <main+0x16>
 		}
 		else
 		{
-			IO_flash(ERROR_PORT,ERROR_LED_GREEN_PIN);
- 2d6:	66 e0       	ldi	r22, 0x06	; 6
- 2d8:	82 e0       	ldi	r24, 0x02	; 2
- 2da:	28 df       	rcall	.-432    	; 0x12c <IO_flash>
- 2dc:	ef cf       	rjmp	.-34     	; 0x2bc <main+0x12>
+			IO_flash_slow(ERROR_PORT,ERROR_LED_GREEN_PIN);
+ 2a2:	66 e0       	ldi	r22, 0x06	; 6
+ 2a4:	82 e0       	ldi	r24, 0x02	; 2
+ 2a6:	61 df       	rcall	.-318    	; 0x16a <IO_flash_slow>
+ 2a8:	f0 cf       	rjmp	.-32     	; 0x28a <main+0x16>
 
-000002de <_exit>:
- 2de:	f8 94       	cli
+000002aa <_exit>:
+ 2aa:	f8 94       	cli
 
-000002e0 <__stop_program>:
- 2e0:	ff cf       	rjmp	.-2      	; 0x2e0 <__stop_program>
+000002ac <__stop_program>:
+ 2ac:	ff cf       	rjmp	.-2      	; 0x2ac <__stop_program>

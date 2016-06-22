@@ -5,76 +5,100 @@
 #include <util/delay.h>
 #include <stdio.h>
 #include <avr/interrupt.h>
+#include <util/twi.h>
 #include "common_defs.h"
 #include "IO.h"
 #include "usb_serial.h"
-#include "twi.h"
+#include "twi_ext.h"
 #include "twi_defs.h"
 #include "error.h"
 
-static uint8_t msg_count = 0;
-static uint8_t tw_status;
-static sMessagePacket messagePacketHeader = {0};
-static uint8_t syncByteFound = 0;
 
-static uint8_t send_message(uint8_t bytes[]);
-static uint8_t recieve_message(void);
-static void cmd_setHeading(void);
-static void init_variables(void);
+//modes
+typedef enum
+{
+	eInit,
+	eLoadData,
+	eStartTXData,
+	eIdle,
+}eStates;
+
+//variables
+static uint8_t msg_count;
+static sMessagePacket messagePacketHeader;
+static uint8_t syncByteFound;
+uint8_t sendbyte;
+eStates mode; 
+
+//functions
+static void cmd_SetHeading(void);
+static void init_Variables(void);
+
 
 ISR(TWI_vect)
-{
+{	
 	cli();
-	tw_status = (TWSR & MASK);
-	
-	switch(tw_status)
+	switch(TW_STATUS)
 	{
-		//Successfully transmitted start condition
-		case MASTER_START_TX:
+		case TW_START:
 		{
-			twi_master_sla_send_address(messagePacketHeader.address, messagePacketHeader.control);					// broadcast slave address
-			break;
-		}
-		/*******************************WRITE MODE**************************************/
-		case MASTER_SLA_W_ACK_RX:
-		{
-			//init variables for sending data
 			msg_count = 0;
-			//send the sync bit
-			twi_send_data(messagePacketHeader.syncbit);
+			TWI_EXT_MasterSlaveLoadAddress(messagePacketHeader.address, messagePacketHeader.control);	// broadcast slave address
 			TWI_SendTransmit();
+
 			break;
 		}
-		case MASTER_SLA_W_NACK_RX:
+		case TW_MT_SLA_ACK:
 		{
-			error_handler(SET);											// error occurred
+			TWI_EXT_LoadData(messagePacketHeader.syncbit);
+			TWI_SendTransmit();
+
 			break;
 		}
-		case MASTER_DATA_TX_ACK_RX:
-		{
-			if(!send_message(messagePacketHeader.data))
-			{
-				TWI_SendStop();
-			}
-			else
-			{
-				TWI_SendTransmit();
-			}
-			break;
-		}
-		case MASTER_DATA_TX_NACK_RX:
+		case TW_MT_SLA_NACK:
 		{
 			error_handler(SET);
 			break;
 		}
-		/*******************************************************************************/
-		/*******************************READ MODE***************************************/		
-		case MASTER_REPEAT_TX:
+		case TW_MT_DATA_ACK:
 		{
-			TWI_SendTransmit();
+			if(msg_count < messagePacketHeader.dataLen)
+			{
+				TWI_EXT_LoadData(messagePacketHeader.data[msg_count++]);
+				TWI_SendTransmit();
+			}
+			else
+			{
+				TWI_SendStop();
+			}
+
 			break;
 		}
-		/*******************************************************************************/	
+		case TW_MT_DATA_NACK:
+		{
+			error_handler(SET);
+			break;
+		}
+		case TW_MR_SLA_ACK:
+		{
+			error_handler(SET);
+			break;
+		}
+		case TW_MR_SLA_NACK:
+		{
+			error_handler(SET);
+			break;
+		}		
+		case TW_MR_DATA_ACK:
+		{
+			error_handler(SET);
+			break;
+		}
+		case TW_MR_DATA_NACK:
+		{
+			//TWI_SendStop();
+			break;
+		}
 		default:
 		{
 			break;
@@ -83,93 +107,72 @@ ISR(TWI_vect)
 	sei();
 }
 
-static void init_variables(void)
+
+static void init_Variables(void)
 {
 	memset(messagePacketHeader.data, 0, sizeof(messagePacketHeader.data));
 	msg_count = 0;
 	syncByteFound = 0;
 }
 
-static uint8_t send_message(uint8_t bytes[])
-{
-	uint8_t status = 0;
-	
-	//Send the message data only
-	if(msg_count < MSG_SIZE)
-	{
-		//Load TWDR buffer
-		twi_send_data(bytes[msg_count]);
-		msg_count++;
-		status = 1;	
-	}
-	else
-	{
-		msg_count =0;
-	}
-	
-	return 	status;
-}
-
-static uint8_t recieve_message(void)
-{
-	uint8_t status = 0;
-	
-	//Check to see if the first rx data is the sync bit
-	if((twi_read_data() == SYNCBIT) && (msg_count == 0) && (!syncByteFound))
-	{
-		syncByteFound = 1;
-		status = 1;
-	}
-	//sync bit found ready to rx data
-	else if(syncByteFound)
-	{
-		if(msg_count < MSG_SIZE)
-		{
-			messagePacketHeader.data[msg_count] = twi_read_data();
-			msg_count++;
-			status = 1;
-		}
-	}
-	else
-	{
-		//do nothing
-	}
-	
-	return status;
-}
-
-static void cmd_setHeading(void)
+static void cmd_SetHeading(void)
 {
 	//Clear the message packet
 	memset(messagePacketHeader.data,0,sizeof(messagePacketHeader.data));
 	
+	//load information on slave
 	messagePacketHeader.address = AUTOPILOT_ADDRESS;
-	messagePacketHeader.control = TWI_WRITE;
+	messagePacketHeader.control = TW_WRITE;
 	messagePacketHeader.syncbit = SYNCBIT;
 	messagePacketHeader.data[0] = SET_HEADING;
 	messagePacketHeader.data[1] = 0x01;
 	messagePacketHeader.data[2] = 0x01;
+	messagePacketHeader.dataLen = 3;
 }
 
 int main(void)
 {
-
-	cmd_setHeading();
 	sei();
-	error_init(ERROR_PORT, ERROR_LED_GREEN_PIN, ERROR_LED_RED_PIN);
-	twi_master_init();
-	TWI_SendStart();
 	
+	//init
+	mode = eInit;
+
 	while (1)
 	{
-		if((messagePacketHeader.data[0] == SET_HEADING) && (messagePacketHeader.data[1] == 0x01) && (messagePacketHeader.data[2] == 0x01))
+		switch(mode)
 		{
-			IO_flash_slow(ERROR_PORT,ERROR_LED_GREEN_PIN);
+			case eInit:
+			{
+				init_Variables();																
+				error_init(ERROR_PORT, ERROR_LED_GREEN_PIN, ERROR_LED_RED_PIN);								//ERROR init
+				TWI_EXT_MasterInit();																			//I2C init
+
+				mode = eLoadData;																		//next state	
+				break;
+			}
+			case eLoadData:
+			{
+				cmd_SetHeading();
+
+				mode = eStartTXData;
+				break;
+			}
+			case eStartTXData:
+			{
+				TWI_SendStart();
+
+				mode = eIdle;
+				break;
+			}
+			case eIdle:
+			{
+				break;
+			}
+			default:
+			{
+				break;
+			}
 		}
-		else
-		{
-			IO_flash(ERROR_PORT,ERROR_LED_GREEN_PIN);
-		}
-		
+		IO_flash_slow(ERROR_PORT,ERROR_LED_GREEN_PIN);
 	}
 }

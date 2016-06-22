@@ -10,9 +10,10 @@
 #include <stdbool.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
+#include <util/twi.h>
 
 #include "IO.h"
-#include "twi.h"
+#include "twi_ext.h"
 #include "twi_defs.h"
 #include "error.h"
 #include "common_defs.h"
@@ -20,130 +21,85 @@
 uint8_t tw_status;
 uint8_t msg_count;
 uint8_t syncByteFound = 0;
+uint8_t bytebuffer[100] = {0};
 static sMessagePacket messagePacketHeader = {0};
 
-static uint8_t recieve_message(void);
-static void init_variables(void);
-static uint8_t send_message(uint8_t bytes[]);
+static void init_Variables(void);
 
 ISR(TWI_vect)
 {
 	cli();
-	tw_status = (TWSR & MASK);
-	
-	switch(tw_status)
+	switch(TW_STATUS)
 	{
-		/*******************************WRITE MODE**************************************/	
-		case SLAVE_SLA_W_ACK_TX:
+		case TW_SR_SLA_ACK:
 		{
-			init_variables();
+			init_Variables();
 			TWI_SendACK();
 			break;
 		}	
-		case SLAVE_DATA_RX_ACK_TX:
+		case TW_SR_DATA_ACK:
 		{
-			if(recieve_message())
-			{
-				TWI_SendACK();
-			}
-			else
-			{
-				TWI_SendNACK();
-			}
+			bytebuffer[msg_count++] = TWDR;
+			TWI_SendACK();
 			break;
 		}
-		case SLAVE_DATA_RX_NACK_TX:
+		case TW_SR_DATA_NACK:
 		{
-			init_variables();
 			error_handler(SET);
-		}
-		/*******************************************************************************/
-		/*******************************READ MODE***************************************/
-		/*******************************************************************************/
-		case SLAVE_BUS_ERROR:
-		{
-			//twi_slave_init(AUTOPILOT_ADDRESS);	
 			break;
+		}
+		case TW_ST_SLA_ACK:
+		{
+			error_handler(SET);
+			break;
+		}
+		case TW_ST_DATA_ACK:
+		{
+			error_handler(SET);
+			break;
+		}
+		case TW_ST_DATA_NACK:
+		{
+			error_handler(SET);
+			break;
+		}
+		case TW_SR_STOP:
+		{
+			TWI_SendTransmit();
 		}
 		default:
 		{
-			TWI_SendTransmit();
 			break;
 		}
 	}
 	sei();
 }
 
-static void init_variables(void)
+static void init_Variables(void)
 {
 	memset(messagePacketHeader.data, 0, sizeof(messagePacketHeader.data));
 	msg_count = 0;
 	syncByteFound = 0;
-}
 
-static uint8_t recieve_message(void)
-{
-	uint8_t status = 0;
-	
-	//Check to see if the first rx data is the sync bit
-	if((twi_read_data() == SYNCBIT) && (msg_count == 0) && (!syncByteFound))
-	{
-		syncByteFound = 1;
-		status = 1;
-	}
-	//sync bit found ready to rx data
-	else if(syncByteFound)
-	{
-		if(msg_count < MSG_SIZE)
-		{
-			messagePacketHeader.data[msg_count] = twi_read_data();
-			msg_count++;
-			status = 1;
-		}
-	}
-	else
-	{
-		//do nothing
-	}		
-	
-	return status;
-}
-
-static uint8_t send_message(uint8_t bytes[])
-{
-	uint8_t status = 0;
-	
-	//Send the message data only
-	if(msg_count < MSG_SIZE)
-	{
-		//Load TWDR buffer
-		twi_send_data(bytes[msg_count]);
-		msg_count++;
-		status = 1;
-	}
-	else
-	{
-		msg_count =0;
-	}
-	
-	return 	status;
 }
 
 int main(void)
 {	
 	sei();
 	error_init(ERROR_PORT, ERROR_LED_GREEN_PIN, ERROR_LED_RED_PIN);
-	twi_slave_init(AUTOPILOT_ADDRESS);
+
+	TWI_EXT_SlaveLoadAddress(AUTOPILOT_ADDRESS);
+	TWI_EXT_SlaveInit();
 	
 	while (1)
 	{
-		if((messagePacketHeader.data[0] == SET_HEADING) && (messagePacketHeader.data[1] == 0x01) && (messagePacketHeader.data[2] == 0x01))
+		if((bytebuffer[0] == SYNCBIT) && (bytebuffer[1] = SET_HEADING) && (bytebuffer[2] == 0x01) && (bytebuffer[3]= 0x01))
 		{
-			IO_flash_slow(ERROR_PORT,ERROR_LED_GREEN_PIN);
+			IO_flash(ERROR_PORT,ERROR_LED_GREEN_PIN);
 		}
 		else
 		{
-			IO_flash(ERROR_PORT,ERROR_LED_GREEN_PIN);
+			IO_flash_slow(ERROR_PORT,ERROR_LED_GREEN_PIN);
 		}
 		
 	}
