@@ -30,10 +30,13 @@ static uint8_t syncByteFound;
 uint8_t sendbyte;
 eStates mode; 
 
+uint8_t bytebuffer[100] = {0};
+
 //functions
 static void cmd_SetHeading(void);
 static void init_Variables(void);
 
+uint8_t data = 0;
 
 ISR(TWI_vect)
 {	
@@ -71,7 +74,6 @@ ISR(TWI_vect)
 			{
 				TWI_SendStop();
 			}
-
 			break;
 		}
 		case TW_MT_DATA_NACK:
@@ -79,24 +81,35 @@ ISR(TWI_vect)
 			error_handler(SET);
 			break;
 		}
-		case TW_MR_SLA_ACK:
-		{
-			error_handler(SET);
-			break;
-		}
+		///////////////////////
 		case TW_MR_SLA_NACK:
 		{
 			error_handler(SET);
 			break;
-		}		
-		case TW_MR_DATA_ACK:
+		}
+		case TW_MR_SLA_ACK:
 		{
-			error_handler(SET);
+			msg_count = 0;
+			TWI_SendACK();
+			break;
+		}
+		case TW_MR_DATA_ACK:
+		{	
+			if(msg_count < messagePacketHeader.dataLen)
+			{
+				bytebuffer[msg_count++] = TWDR;
+				TWI_SendACK();
+			}
+			else
+			{
+				TWI_SendNACK();
+			}
+			
 			break;
 		}
 		case TW_MR_DATA_NACK:
 		{
-			//TWI_SendStop();
+			TWI_SendStop();
 			break;
 		}
 		default:
@@ -122,7 +135,7 @@ static void cmd_SetHeading(void)
 	
 	//load information on slave
 	messagePacketHeader.address = AUTOPILOT_ADDRESS;
-	messagePacketHeader.control = TW_WRITE;
+	messagePacketHeader.control = TW_READ;
 	messagePacketHeader.syncbit = SYNCBIT;
 	messagePacketHeader.data[0] = SET_HEADING;
 	messagePacketHeader.data[1] = 0x01;
@@ -153,7 +166,6 @@ int main(void)
 			case eLoadData:
 			{
 				cmd_SetHeading();
-
 				mode = eStartTXData;
 				break;
 			}
@@ -173,6 +185,41 @@ int main(void)
 				break;
 			}
 		}
-		IO_flash_slow(ERROR_PORT,ERROR_LED_GREEN_PIN);
+
+		if((bytebuffer[0] == SET_HEADING) && (bytebuffer[1] == 0x01) && (bytebuffer[2] == 0x01))
+		{
+			IO_flash(ERROR_PORT,ERROR_LED_GREEN_PIN);
+		}
+		else
+		{
+
+			//IO_flash(ERROR_PORT,ERROR_LED_GREEN_PIN);
+			IO_flash_slow(ERROR_PORT,ERROR_LED_GREEN_PIN);
+		}
 	}
 }
+
+
+/*
+			if(msg_count < messagePacketHeader.dataLen)
+			{
+				bytebuffer[msg_count++] = TWDR;
+				TWI_SendACK();
+			}
+			else
+			{
+				//TWI_SendNACK
+			}
+			break;
+
+
+						if(msg_count < messagePacketHeader.dataLen)
+						{
+							TWI_EXT_LoadData(messagePacketHeader.data[msg_count++]);
+							TWI_SendTransmit();
+						}
+						else
+						{
+							TWI_SendStop();
+						}
+						*/

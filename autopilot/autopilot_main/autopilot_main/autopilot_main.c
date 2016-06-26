@@ -36,7 +36,7 @@ ISR(TWI_vect)
 			init_Variables();
 			TWI_SendACK();
 			break;
-		}	
+		}
 		case TW_SR_DATA_ACK:
 		{
 			bytebuffer[msg_count++] = TWDR;
@@ -48,19 +48,35 @@ ISR(TWI_vect)
 			error_handler(SET);
 			break;
 		}
+		////////////////////
 		case TW_ST_SLA_ACK:
 		{
-			error_handler(SET);
+			msg_count = 0;
+			TWDR = 0x01;
+			TWI_SendACK();
 			break;
 		}
 		case TW_ST_DATA_ACK:
 		{
-			error_handler(SET);
+			if(msg_count < messagePacketHeader.dataLen)
+			{
+				TWDR = (messagePacketHeader.data[msg_count++]);
+				TWI_SendACK();
+			}
+			else
+			{
+				TWI_SendNACK();
+			}
 			break;
 		}
 		case TW_ST_DATA_NACK:
 		{
-			error_handler(SET);
+			TWI_SendTransmit();
+			break;
+		}
+		case TW_ST_LAST_DATA:
+		{
+			TWI_SendTransmit();
 			break;
 		}
 		case TW_SR_STOP:
@@ -75,9 +91,23 @@ ISR(TWI_vect)
 	sei();
 }
 
+static void cmd_SetHeading(void)
+{
+	//Clear the message packet
+	memset(messagePacketHeader.data,0,sizeof(messagePacketHeader.data));
+	
+	//load information on slave
+	messagePacketHeader.syncbit = SYNCBIT;
+	messagePacketHeader.data[0] = SET_HEADING;
+	messagePacketHeader.data[1] = 0x01;
+	messagePacketHeader.data[2] = 0x01;
+	messagePacketHeader.dataLen = 3;
+}
+
+
 static void init_Variables(void)
 {
-	memset(messagePacketHeader.data, 0, sizeof(messagePacketHeader.data));
+	//memset(messagePacketHeader.data, 0, sizeof(messagePacketHeader.data));
 	msg_count = 0;
 	syncByteFound = 0;
 
@@ -85,6 +115,7 @@ static void init_Variables(void)
 
 int main(void)
 {	
+	cmd_SetHeading();
 	sei();
 	error_init(ERROR_PORT, ERROR_LED_GREEN_PIN, ERROR_LED_RED_PIN);
 
@@ -93,7 +124,7 @@ int main(void)
 	
 	while (1)
 	{
-		if((bytebuffer[0] == SYNCBIT) && (bytebuffer[1] = SET_HEADING) && (bytebuffer[2] == 0x01) && (bytebuffer[3]= 0x01))
+		if((bytebuffer[0] == SYNCBIT) && (bytebuffer[1] == SET_HEADING) && (bytebuffer[2] == 0x01) && (bytebuffer[3]= 0x01))
 		{
 			IO_flash(ERROR_PORT,ERROR_LED_GREEN_PIN);
 		}
@@ -104,9 +135,3 @@ int main(void)
 		
 	}
 }
-	
-	
-
-	
-		
-		

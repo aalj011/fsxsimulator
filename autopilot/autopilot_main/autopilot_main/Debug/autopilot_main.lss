@@ -3,31 +3,31 @@ autopilot_main.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         000002ae  00000000  00000000  00000074  2**1
+  0 .text         000002f8  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000000  00800060  00800060  00000322  2**0
+  1 .data         00000000  00800060  00800060  0000036c  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          00000071  00800060  00800060  00000322  2**0
+  2 .bss          00000071  00800060  00800060  0000036c  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  00000322  2**0
+  3 .comment      00000030  00000000  00000000  0000036c  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000354  2**2
+  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  0000039c  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 000000d0  00000000  00000000  00000390  2**0
+  5 .debug_aranges 000000d0  00000000  00000000  000003d8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   000009d8  00000000  00000000  00000460  2**0
+  6 .debug_info   000009b7  00000000  00000000  000004a8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 000004a9  00000000  00000000  00000e38  2**0
+  7 .debug_abbrev 000004c7  00000000  00000000  00000e5f  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000006c4  00000000  00000000  000012e1  2**0
+  8 .debug_line   0000070f  00000000  00000000  00001326  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000198  00000000  00000000  000019a8  2**2
+  9 .debug_frame  00000198  00000000  00000000  00001a38  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    0000040c  00000000  00000000  00001b40  2**0
+ 10 .debug_str    0000041b  00000000  00000000  00001bd0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    0000045d  00000000  00000000  00001f4c  2**0
+ 11 .debug_loc    0000045d  00000000  00000000  00001feb  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000090  00000000  00000000  000023a9  2**0
+ 12 .debug_ranges 00000090  00000000  00000000  00002448  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -74,8 +74,8 @@ Disassembly of section .text:
   3c:	a1 3d       	cpi	r26, 0xD1	; 209
   3e:	b2 07       	cpc	r27, r18
   40:	e1 f7       	brne	.-8      	; 0x3a <.do_clear_bss_loop>
-  42:	18 d1       	rcall	.+560    	; 0x274 <main>
-  44:	32 c1       	rjmp	.+612    	; 0x2aa <_exit>
+  42:	31 d1       	rcall	.+610    	; 0x2a6 <main>
+  44:	57 c1       	rjmp	.+686    	; 0x2f4 <_exit>
 
 00000046 <__bad_interrupt>:
   46:	dc cf       	rjmp	.-72     	; 0x0 <__vectors>
@@ -372,31 +372,33 @@ ISR(TWI_vect)
  1d8:	81 b1       	in	r24, 0x01	; 1
  1da:	88 7f       	andi	r24, 0xF8	; 248
  1dc:	80 3a       	cpi	r24, 0xA0	; 160
- 1de:	b1 f1       	breq	.+108    	; 0x24c <__vector_17+0x98>
- 1e0:	38 f4       	brcc	.+14     	; 0x1f0 <__vector_17+0x3c>
- 1e2:	80 38       	cpi	r24, 0x80	; 128
- 1e4:	c9 f0       	breq	.+50     	; 0x218 <__vector_17+0x64>
- 1e6:	88 38       	cpi	r24, 0x88	; 136
- 1e8:	29 f1       	breq	.+74     	; 0x234 <__vector_17+0x80>
- 1ea:	80 36       	cpi	r24, 0x60	; 96
- 1ec:	89 f5       	brne	.+98     	; 0x250 <__vector_17+0x9c>
- 1ee:	07 c0       	rjmp	.+14     	; 0x1fe <__vector_17+0x4a>
- 1f0:	88 3b       	cpi	r24, 0xB8	; 184
- 1f2:	31 f1       	breq	.+76     	; 0x240 <__vector_17+0x8c>
- 1f4:	80 3c       	cpi	r24, 0xC0	; 192
- 1f6:	39 f1       	breq	.+78     	; 0x246 <__vector_17+0x92>
- 1f8:	88 3a       	cpi	r24, 0xA8	; 168
- 1fa:	51 f5       	brne	.+84     	; 0x250 <__vector_17+0x9c>
- 1fc:	1e c0       	rjmp	.+60     	; 0x23a <__vector_17+0x86>
-	sei();
-}
+ 1de:	09 f4       	brne	.+2      	; 0x1e2 <__vector_17+0x2e>
+ 1e0:	4e c0       	rjmp	.+156    	; 0x27e <__vector_17+0xca>
+ 1e2:	40 f4       	brcc	.+16     	; 0x1f4 <__vector_17+0x40>
+ 1e4:	80 38       	cpi	r24, 0x80	; 128
+ 1e6:	c1 f0       	breq	.+48     	; 0x218 <__vector_17+0x64>
+ 1e8:	88 38       	cpi	r24, 0x88	; 136
+ 1ea:	21 f1       	breq	.+72     	; 0x234 <__vector_17+0x80>
+ 1ec:	80 36       	cpi	r24, 0x60	; 96
+ 1ee:	09 f0       	breq	.+2      	; 0x1f2 <__vector_17+0x3e>
+ 1f0:	48 c0       	rjmp	.+144    	; 0x282 <__vector_17+0xce>
+ 1f2:	0b c0       	rjmp	.+22     	; 0x20a <__vector_17+0x56>
+ 1f4:	88 3b       	cpi	r24, 0xB8	; 184
+ 1f6:	41 f1       	breq	.+80     	; 0x248 <__vector_17+0x94>
+ 1f8:	18 f4       	brcc	.+6      	; 0x200 <__vector_17+0x4c>
+ 1fa:	88 3a       	cpi	r24, 0xA8	; 168
+ 1fc:	f1 f0       	breq	.+60     	; 0x23a <__vector_17+0x86>
+ 1fe:	41 c0       	rjmp	.+130    	; 0x282 <__vector_17+0xce>
+ 200:	80 3c       	cpi	r24, 0xC0	; 192
+ 202:	b9 f1       	breq	.+110    	; 0x272 <__vector_17+0xbe>
+ 204:	88 3c       	cpi	r24, 0xC8	; 200
+ 206:	c1 f1       	breq	.+112    	; 0x278 <__vector_17+0xc4>
+ 208:	3c c0       	rjmp	.+120    	; 0x282 <__vector_17+0xce>
+
 
 static void init_Variables(void)
 {
-	memset(messagePacketHeader.data, 0, sizeof(messagePacketHeader.data));
- 1fe:	10 92 66 00 	sts	0x0066, r1
- 202:	10 92 67 00 	sts	0x0067, r1
- 206:	10 92 68 00 	sts	0x0068, r1
+	//memset(messagePacketHeader.data, 0, sizeof(messagePacketHeader.data));
 	msg_count = 0;
  20a:	10 92 d0 00 	sts	0x00D0, r1
 	syncByteFound = 0;
@@ -410,8 +412,8 @@ static void init_Variables(void)
  212:	85 ec       	ldi	r24, 0xC5	; 197
  214:	86 bf       	out	0x36, r24	; 54
 			break;
- 216:	1c c0       	rjmp	.+56     	; 0x250 <__vector_17+0x9c>
-		}	
+ 216:	35 c0       	rjmp	.+106    	; 0x282 <__vector_17+0xce>
+		}
 		case TW_SR_DATA_ACK:
 		{
 			bytebuffer[msg_count++] = TWDR;
@@ -428,7 +430,7 @@ static void init_Variables(void)
  22e:	85 ec       	ldi	r24, 0xC5	; 197
  230:	86 bf       	out	0x36, r24	; 54
 			break;
- 232:	0e c0       	rjmp	.+28     	; 0x250 <__vector_17+0x9c>
+ 232:	27 c0       	rjmp	.+78     	; 0x282 <__vector_17+0xce>
 		}
 		case TW_SR_DATA_NACK:
 		{
@@ -436,114 +438,173 @@ static void init_Variables(void)
  234:	81 e0       	ldi	r24, 0x01	; 1
  236:	17 df       	rcall	.-466    	; 0x66 <error_handler>
 			break;
- 238:	0b c0       	rjmp	.+22     	; 0x250 <__vector_17+0x9c>
+ 238:	24 c0       	rjmp	.+72     	; 0x282 <__vector_17+0xce>
 		}
+		////////////////////
 		case TW_ST_SLA_ACK:
 		{
-			error_handler(SET);
- 23a:	81 e0       	ldi	r24, 0x01	; 1
- 23c:	14 df       	rcall	.-472    	; 0x66 <error_handler>
+			msg_count = 0;
+ 23a:	10 92 d0 00 	sts	0x00D0, r1
+			TWDR = 0x01;
+ 23e:	81 e0       	ldi	r24, 0x01	; 1
+ 240:	83 b9       	out	0x03, r24	; 3
+			TWI_SendACK();
+ 242:	85 ec       	ldi	r24, 0xC5	; 197
+ 244:	86 bf       	out	0x36, r24	; 54
 			break;
- 23e:	08 c0       	rjmp	.+16     	; 0x250 <__vector_17+0x9c>
+ 246:	1d c0       	rjmp	.+58     	; 0x282 <__vector_17+0xce>
 		}
 		case TW_ST_DATA_ACK:
 		{
-			error_handler(SET);
- 240:	81 e0       	ldi	r24, 0x01	; 1
- 242:	11 df       	rcall	.-478    	; 0x66 <error_handler>
+			if(msg_count < messagePacketHeader.dataLen)
+ 248:	e0 91 d0 00 	lds	r30, 0x00D0
+ 24c:	80 91 69 00 	lds	r24, 0x0069
+ 250:	e8 17       	cp	r30, r24
+ 252:	60 f4       	brcc	.+24     	; 0x26c <__vector_17+0xb8>
+			{
+				TWDR = (messagePacketHeader.data[msg_count++]);
+ 254:	81 e0       	ldi	r24, 0x01	; 1
+ 256:	8e 0f       	add	r24, r30
+ 258:	80 93 d0 00 	sts	0x00D0, r24
+ 25c:	f0 e0       	ldi	r31, 0x00	; 0
+ 25e:	ed 59       	subi	r30, 0x9D	; 157
+ 260:	ff 4f       	sbci	r31, 0xFF	; 255
+ 262:	83 81       	ldd	r24, Z+3	; 0x03
+ 264:	83 b9       	out	0x03, r24	; 3
+				TWI_SendACK();
+ 266:	85 ec       	ldi	r24, 0xC5	; 197
+ 268:	86 bf       	out	0x36, r24	; 54
+ 26a:	0b c0       	rjmp	.+22     	; 0x282 <__vector_17+0xce>
+			}
+			else
+			{
+				TWI_SendNACK();
+ 26c:	85 e8       	ldi	r24, 0x85	; 133
+ 26e:	86 bf       	out	0x36, r24	; 54
+ 270:	08 c0       	rjmp	.+16     	; 0x282 <__vector_17+0xce>
+			}
 			break;
- 244:	05 c0       	rjmp	.+10     	; 0x250 <__vector_17+0x9c>
 		}
 		case TW_ST_DATA_NACK:
 		{
-			error_handler(SET);
- 246:	81 e0       	ldi	r24, 0x01	; 1
- 248:	0e df       	rcall	.-484    	; 0x66 <error_handler>
+			TWI_SendTransmit();
+ 272:	85 e8       	ldi	r24, 0x85	; 133
+ 274:	86 bf       	out	0x36, r24	; 54
 			break;
- 24a:	02 c0       	rjmp	.+4      	; 0x250 <__vector_17+0x9c>
+ 276:	05 c0       	rjmp	.+10     	; 0x282 <__vector_17+0xce>
+		}
+		case TW_ST_LAST_DATA:
+		{
+			TWI_SendTransmit();
+ 278:	85 e8       	ldi	r24, 0x85	; 133
+ 27a:	86 bf       	out	0x36, r24	; 54
+			break;
+ 27c:	02 c0       	rjmp	.+4      	; 0x282 <__vector_17+0xce>
 		}
 		case TW_SR_STOP:
 		{
 			TWI_SendTransmit();
- 24c:	85 e8       	ldi	r24, 0x85	; 133
- 24e:	86 bf       	out	0x36, r24	; 54
+ 27e:	85 e8       	ldi	r24, 0x85	; 133
+ 280:	86 bf       	out	0x36, r24	; 54
 		default:
 		{
 			break;
 		}
 	}
 	sei();
- 250:	78 94       	sei
+ 282:	78 94       	sei
 }
- 252:	ff 91       	pop	r31
- 254:	ef 91       	pop	r30
- 256:	bf 91       	pop	r27
- 258:	af 91       	pop	r26
- 25a:	9f 91       	pop	r25
- 25c:	8f 91       	pop	r24
- 25e:	7f 91       	pop	r23
- 260:	6f 91       	pop	r22
- 262:	5f 91       	pop	r21
- 264:	4f 91       	pop	r20
- 266:	3f 91       	pop	r19
- 268:	2f 91       	pop	r18
- 26a:	0f 90       	pop	r0
- 26c:	0f be       	out	0x3f, r0	; 63
- 26e:	0f 90       	pop	r0
- 270:	1f 90       	pop	r1
- 272:	18 95       	reti
+ 284:	ff 91       	pop	r31
+ 286:	ef 91       	pop	r30
+ 288:	bf 91       	pop	r27
+ 28a:	af 91       	pop	r26
+ 28c:	9f 91       	pop	r25
+ 28e:	8f 91       	pop	r24
+ 290:	7f 91       	pop	r23
+ 292:	6f 91       	pop	r22
+ 294:	5f 91       	pop	r21
+ 296:	4f 91       	pop	r20
+ 298:	3f 91       	pop	r19
+ 29a:	2f 91       	pop	r18
+ 29c:	0f 90       	pop	r0
+ 29e:	0f be       	out	0x3f, r0	; 63
+ 2a0:	0f 90       	pop	r0
+ 2a2:	1f 90       	pop	r1
+ 2a4:	18 95       	reti
 
-00000274 <main>:
-
+000002a6 <main>:
+{
+	//Clear the message packet
+	memset(messagePacketHeader.data,0,sizeof(messagePacketHeader.data));
+	
+	//load information on slave
+	messagePacketHeader.syncbit = SYNCBIT;
+ 2a6:	e3 e6       	ldi	r30, 0x63	; 99
+ 2a8:	f0 e0       	ldi	r31, 0x00	; 0
+ 2aa:	86 eb       	ldi	r24, 0xB6	; 182
+ 2ac:	82 83       	std	Z+2, r24	; 0x02
+	messagePacketHeader.data[0] = SET_HEADING;
+ 2ae:	81 e0       	ldi	r24, 0x01	; 1
+ 2b0:	83 83       	std	Z+3, r24	; 0x03
+	messagePacketHeader.data[1] = 0x01;
+ 2b2:	84 83       	std	Z+4, r24	; 0x04
+	messagePacketHeader.data[2] = 0x01;
+ 2b4:	85 83       	std	Z+5, r24	; 0x05
+	messagePacketHeader.dataLen = 3;
+ 2b6:	83 e0       	ldi	r24, 0x03	; 3
+ 2b8:	86 83       	std	Z+6, r24	; 0x06
 }
 
 int main(void)
 {	
+	cmd_SetHeading();
 	sei();
- 274:	78 94       	sei
+ 2ba:	78 94       	sei
 	error_init(ERROR_PORT, ERROR_LED_GREEN_PIN, ERROR_LED_RED_PIN);
- 276:	47 e0       	ldi	r20, 0x07	; 7
- 278:	66 e0       	ldi	r22, 0x06	; 6
- 27a:	82 e0       	ldi	r24, 0x02	; 2
- 27c:	e5 de       	rcall	.-566    	; 0x48 <error_init>
+ 2bc:	47 e0       	ldi	r20, 0x07	; 7
+ 2be:	66 e0       	ldi	r22, 0x06	; 6
+ 2c0:	82 e0       	ldi	r24, 0x02	; 2
+ 2c2:	c2 de       	rcall	.-636    	; 0x48 <error_init>
 
 	TWI_EXT_SlaveLoadAddress(AUTOPILOT_ADDRESS);
- 27e:	81 e0       	ldi	r24, 0x01	; 1
- 280:	93 df       	rcall	.-218    	; 0x1a8 <TWI_EXT_SlaveLoadAddress>
+ 2c4:	81 e0       	ldi	r24, 0x01	; 1
+ 2c6:	70 df       	rcall	.-288    	; 0x1a8 <TWI_EXT_SlaveLoadAddress>
 	TWI_EXT_SlaveInit();
- 282:	95 df       	rcall	.-214    	; 0x1ae <TWI_EXT_SlaveInit>
+ 2c8:	72 df       	rcall	.-284    	; 0x1ae <TWI_EXT_SlaveInit>
 	
 	while (1)
 	{
-		if((bytebuffer[0] == SYNCBIT) && (bytebuffer[1] = SET_HEADING) && (bytebuffer[2] == 0x01) && (bytebuffer[3]= 0x01))
- 284:	ca e6       	ldi	r28, 0x6A	; 106
- 286:	d0 e0       	ldi	r29, 0x00	; 0
- 288:	11 e0       	ldi	r17, 0x01	; 1
- 28a:	88 81       	ld	r24, Y
- 28c:	86 3b       	cpi	r24, 0xB6	; 182
- 28e:	49 f4       	brne	.+18     	; 0x2a2 <main+0x2e>
- 290:	19 83       	std	Y+1, r17	; 0x01
- 292:	8a 81       	ldd	r24, Y+2	; 0x02
- 294:	81 30       	cpi	r24, 0x01	; 1
- 296:	29 f4       	brne	.+10     	; 0x2a2 <main+0x2e>
- 298:	1b 83       	std	Y+3, r17	; 0x03
+		if((bytebuffer[0] == SYNCBIT) && (bytebuffer[1] == SET_HEADING) && (bytebuffer[2] == 0x01) && (bytebuffer[3]= 0x01))
+ 2ca:	ca e6       	ldi	r28, 0x6A	; 106
+ 2cc:	d0 e0       	ldi	r29, 0x00	; 0
+ 2ce:	11 e0       	ldi	r17, 0x01	; 1
+ 2d0:	88 81       	ld	r24, Y
+ 2d2:	86 3b       	cpi	r24, 0xB6	; 182
+ 2d4:	59 f4       	brne	.+22     	; 0x2ec <main+0x46>
+ 2d6:	89 81       	ldd	r24, Y+1	; 0x01
+ 2d8:	81 30       	cpi	r24, 0x01	; 1
+ 2da:	41 f4       	brne	.+16     	; 0x2ec <main+0x46>
+ 2dc:	8a 81       	ldd	r24, Y+2	; 0x02
+ 2de:	81 30       	cpi	r24, 0x01	; 1
+ 2e0:	29 f4       	brne	.+10     	; 0x2ec <main+0x46>
+ 2e2:	1b 83       	std	Y+3, r17	; 0x03
 		{
 			IO_flash(ERROR_PORT,ERROR_LED_GREEN_PIN);
- 29a:	66 e0       	ldi	r22, 0x06	; 6
- 29c:	82 e0       	ldi	r24, 0x02	; 2
- 29e:	46 df       	rcall	.-372    	; 0x12c <IO_flash>
- 2a0:	f4 cf       	rjmp	.-24     	; 0x28a <main+0x16>
+ 2e4:	66 e0       	ldi	r22, 0x06	; 6
+ 2e6:	82 e0       	ldi	r24, 0x02	; 2
+ 2e8:	21 df       	rcall	.-446    	; 0x12c <IO_flash>
+ 2ea:	f2 cf       	rjmp	.-28     	; 0x2d0 <main+0x2a>
 		}
 		else
 		{
 			IO_flash_slow(ERROR_PORT,ERROR_LED_GREEN_PIN);
- 2a2:	66 e0       	ldi	r22, 0x06	; 6
- 2a4:	82 e0       	ldi	r24, 0x02	; 2
- 2a6:	61 df       	rcall	.-318    	; 0x16a <IO_flash_slow>
- 2a8:	f0 cf       	rjmp	.-32     	; 0x28a <main+0x16>
+ 2ec:	66 e0       	ldi	r22, 0x06	; 6
+ 2ee:	82 e0       	ldi	r24, 0x02	; 2
+ 2f0:	3c df       	rcall	.-392    	; 0x16a <IO_flash_slow>
+ 2f2:	ee cf       	rjmp	.-36     	; 0x2d0 <main+0x2a>
 
-000002aa <_exit>:
- 2aa:	f8 94       	cli
+000002f4 <_exit>:
+ 2f4:	f8 94       	cli
 
-000002ac <__stop_program>:
- 2ac:	ff cf       	rjmp	.-2      	; 0x2ac <__stop_program>
+000002f6 <__stop_program>:
+ 2f6:	ff cf       	rjmp	.-2      	; 0x2f6 <__stop_program>

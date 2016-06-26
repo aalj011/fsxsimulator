@@ -12,6 +12,145 @@
 #include "twi_ext.h"
 #include "twi_defs.h"
 
+//uint8_t bytebuffer[100] = {0};
+
+/*
+ISR(TWI_vect)
+{
+	cli();
+	switch(TW_STATUS)
+	{
+		case TW_START:
+		{
+			msg_count = 0;
+			TWI_EXT_MasterSlaveLoadAddress(messagePacketHeader.address, messagePacketHeader.control);	// broadcast slave address
+			TWI_SendTransmit();
+
+			break;
+		}
+		case TW_MT_SLA_ACK:
+		{
+			TWI_EXT_LoadData(messagePacketHeader.syncbit);
+			TWI_SendTransmit();
+
+			break;
+		}
+		case TW_MT_SLA_NACK:
+		{
+			error_handler(SET);
+			break;
+		}
+		case TW_MT_DATA_ACK:
+		{
+			if(msg_count < messagePacketHeader.dataLen)
+			{
+				TWI_EXT_LoadData(messagePacketHeader.data[msg_count++]);
+				TWI_SendTransmit();
+			}
+			else
+			{
+				TWI_SendStop();
+			}
+			break;
+		}
+		case TW_MT_DATA_NACK:
+		{
+			error_handler(SET);
+			break;
+		}
+		///////////////////////
+		case TW_MR_SLA_NACK:
+		{
+			error_handler(SET);
+			break;
+		}
+		case TW_MR_SLA_ACK:
+		{
+			msg_count = 0;
+			TWI_SendACK();
+			break;
+		}
+		case TW_MR_DATA_ACK:
+		{
+			if(msg_count < messagePacketHeader.dataLen)
+			{
+				bytebuffer[msg_count++] = TWDR;
+				TWI_SendACK();
+			}
+			else
+			{
+				TWI_SendNACK();
+			}
+			
+			break;
+		}
+		case TW_MR_DATA_NACK:
+		{
+			TWI_SendStop();
+			break;
+		}
+		case TW_SR_SLA_ACK:
+		{
+			init_Variables();
+			TWI_SendACK();
+			break;
+		}
+		case TW_SR_DATA_ACK:
+		{
+			bytebuffer[msg_count++] = TWDR;
+			TWI_SendACK();
+			break;
+		}
+		case TW_SR_DATA_NACK:
+		{
+			error_handler(SET);
+			break;
+		}
+		////////////////////
+		case TW_ST_SLA_ACK:
+		{
+			msg_count = 0;
+			TWDR = 0x01;
+			TWI_SendACK();
+			break;
+		}
+		case TW_ST_DATA_ACK:
+		{
+			if(msg_count < messagePacketHeader.dataLen)
+			{
+				TWDR = (messagePacketHeader.data[msg_count++]);
+				TWI_SendACK();
+			}
+			else
+			{
+				TWI_SendNACK();
+			}
+			break;
+		}
+		case TW_ST_DATA_NACK:
+		{
+			TWI_SendTransmit();
+			break;
+		}
+		case TW_ST_LAST_DATA:
+		{
+			TWI_SendTransmit();
+			break;
+		}
+		case TW_SR_STOP:
+		{
+			TWI_SendTransmit();
+		}
+		default:
+		{
+			break;
+		}
+	}
+	sei();
+}
+
+*/
+
 /*****************************************************************************
 Name:			TWI_MasterInit
 Purpose:		Initializes the twi communication for the master
